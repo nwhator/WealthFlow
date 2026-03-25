@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import BetForm from './BetForm'
 import BetList from './BetList'
+import SuggestedBets from './SuggestedBets'
 
 export default async function BettingPage() {
   const supabase = await createClient()
@@ -31,6 +32,7 @@ export default async function BettingPage() {
         </div>
       </div>
       
+      <SuggestedBets bankroll={bettingBalance} />
       <BetForm />
       
       <section className="space-y-4">

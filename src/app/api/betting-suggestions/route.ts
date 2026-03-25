@@ -38,7 +38,10 @@ export async function GET(request: Request) {
 
     const suggestions = []
     
-    // Evaluate upcoming matches across globally scanned bookmakerscv
+    // Evaluate upcoming matches across globally scanned bookmakers
+    for (const game of games) {
+      if (!game.bookmakers || game.bookmakers.length === 0) continue;
+
       const commenceDate = new Date(game.commence_time);
       const now = new Date();
       const timeDiffHours = (commenceDate.getTime() - now.getTime()) / (1000 * 60 * 60);
@@ -123,7 +126,7 @@ export async function GET(request: Request) {
     }
 
     // Sort priority logic strictly by Safest Games (lowest risk %)
-    suggestions.sort((a, b) => a.riskPercent - b.riskPercent)
+    suggestions.sort((a, b) => a.riskPercent - b.riskPercent);
 
     // Return the top 50 absolute safe matches scaled cleanly!
     return NextResponse.json(suggestions.slice(0, 50));

@@ -131,6 +131,8 @@ export async function GET(request: Request) {
         suggestedStake: calcSuggestedStake(bestPriceForFavored),
         margin: bookmakerMargin > 0 ? bookmakerMargin : 0 // Fallback clamp
       })
+    }
+
     // Take top 5 for deep statistical analysis (limited by API-Sports daily 100 request cap)
     const analyzedMatches = await Promise.all(suggestions.slice(0, 5).map(async (m) => {
       // Extract team names from "Home vs Away" string

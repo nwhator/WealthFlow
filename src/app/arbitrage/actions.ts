@@ -9,6 +9,7 @@ export async function bookmarkOpportunity(opportunity: {
   market: string,
   arbitrage_percentage: number,
   profit_estimate: number,
+  commence_time: string,
   details: Record<string, unknown>
 }) {
   const supabase = await createClient()
@@ -25,6 +26,7 @@ export async function bookmarkOpportunity(opportunity: {
       match: opportunity.match,
       sport: opportunity.sport,
       market: opportunity.market,
+      commence_time: opportunity.commence_time,
       arbitrage_percentage: opportunity.arbitrage_percentage,
       profit_estimate: opportunity.profit_estimate,
       details: opportunity.details,
@@ -38,4 +40,26 @@ export async function bookmarkOpportunity(opportunity: {
 
   revalidatePath('/arbitrage')
   return { success: true }
+}
+
+export async function getSavedOpportunities() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    return { error: 'Not authenticated' }
+  }
+
+  const { data, error } = await supabase
+    .from('arbitrage_opportunities')
+    .select('*')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Fetch saved failed:', error)
+    return { error: error.message }
+  }
+
+  return { data }
 }

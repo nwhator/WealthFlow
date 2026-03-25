@@ -47,7 +47,13 @@ export async function getNormalizedOdds(): Promise<NormalizedGame[]> {
 
   const endpoints = [
     `${baseUrl}/sports/upcoming/odds/?apiKey=${apiKey}&regions=eu,uk,us,au&markets=h2h`,
+    `${baseUrl}/sports/soccer_epl/odds/?apiKey=${apiKey}&regions=eu,uk,us&markets=h2h`,
+    `${baseUrl}/sports/soccer_uefa_champs_league/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
     `${baseUrl}/sports/basketball_nba/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`,
+    `${baseUrl}/sports/basketball_euroleague/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+    `${baseUrl}/sports/tennis_atp/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+    `${baseUrl}/sports/mma_mixed_martial_arts/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`,
+    `${baseUrl}/sports/icehockey_nhl/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`,
   ];
 
   try {

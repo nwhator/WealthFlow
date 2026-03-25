@@ -9,7 +9,7 @@ export async function bookmarkOpportunity(opportunity: {
   market: string,
   arbitrage_percentage: number,
   profit_estimate: number,
-  details: any
+  details: Record<string, unknown>
 }) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()

@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
 import { bookmarkOpportunity } from './actions'
 
 type Outcome = {
@@ -40,7 +43,7 @@ export default function ArbitrageDashboard() {
     else alert('Opportunity bookmarked!')
   }
 
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       const res = await fetch(`/api/arbitrage/calculate?investment=${investment}`)
@@ -51,11 +54,11 @@ export default function ArbitrageDashboard() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [investment])
 
   useEffect(() => {
     fetchData()
-  }, [investment])
+  }, [fetchData])
 
   const filtered = opportunities.filter((op) => {
     if (filter === 'All') return true

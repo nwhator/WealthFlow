@@ -1,5 +1,3 @@
-type SportType = 'football' | 'basketball' | 'nba' | 'nfl' | 'baseball' | 'hockey' | 'mma' | 'volleyball';
-
 const sportToDomain: Record<string, string> = {
   'football': 'v3.football',
   'soccer': 'v3.football',
@@ -49,8 +47,7 @@ export async function calculateSafeScore(sport: string, homeTeam: string, awayTe
   }
 
   // 3. Simple historical win ratio
-  const homeWins = h2h.response.filter((r: any) => r.teams.home.name === homeTeam && r.teams.home.winner).length;
-  const awayWins = h2h.response.filter((r: any) => r.teams.away.name === awayTeam && r.teams.away.winner).length;
+  const homeWins = h2h.response.filter((r: { teams: { home: { name: string; winner: boolean } } }) => r.teams.home.name === homeTeam && r.teams.home.winner).length;
   const total = h2h.response.length;
 
   return (homeWins / total) || 0.5;

@@ -20,8 +20,16 @@ export async function GET(request: Request) {
       // Group outcomes from all bookmakers by name (Team A, Team B, Draw)
       const outcomesByName: { [name: string]: Outcome[] } = {};
 
-      game.bookmakers.forEach((bookie: any) => {
-        bookie.markets.forEach((market: any) => {
+      interface OddsAPIBookmaker {
+        title: string;
+        markets: {
+          key: string;
+          outcomes: Outcome[];
+        }[];
+      }
+
+      game.bookmakers.forEach((bookie: OddsAPIBookmaker) => {
+        bookie.markets.forEach((market) => {
           if (market.key === 'h2h') {
             market.outcomes.forEach((outcome: Outcome) => {
               if (!outcomesByName[outcome.name]) outcomesByName[outcome.name] = [];

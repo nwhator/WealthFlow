@@ -39,8 +39,16 @@ export default function ArbitrageDashboard() {
   const [savedOpportunities, setSavedOpportunities] = useState<SavedOp[]>([])
   const [loading, setLoading] = useState(true)
   const [investment, setInvestment] = useState(10000)
+  const [debouncedInvestment, setDebouncedInvestment] = useState(10000)
   const [filter, setFilter] = useState('All')
   const [savingId, setSavingId] = useState<number | null>(null)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedInvestment(investment)
+    }, 500)
+    return () => clearTimeout(handler)
+  }, [investment])
 
   const handleBookmark = async (op: ArbitrageOp, idx: number) => {
     setSavingId(idx)
@@ -67,7 +75,7 @@ export default function ArbitrageDashboard() {
     if (activeTab === 'Saved') return;
     setLoading(true)
     try {
-      const res = await fetch(`/api/arbitrage/calculate?investment=${investment}`)
+      const res = await fetch(`/api/arbitrage/calculate?investment=${debouncedInvestment}`)
       if (!res.ok) throw new Error('API failed')
       const data = await res.json()
       setOpportunities(Array.isArray(data) ? data : [])
@@ -77,7 +85,7 @@ export default function ArbitrageDashboard() {
     } finally {
       setLoading(false)
     }
-  }, [investment, activeTab])
+  }, [debouncedInvestment, activeTab])
 
   const fetchSaved = useCallback(async () => {
     if (activeTab === 'Live') return;

@@ -13,20 +13,13 @@ export async function GET(request: Request) {
     if (!res.ok) throw new Error("Failed to fetch odds")
     const games = await res.json()
 
-    // Suggesting stakes using basic fractional bankroll management
-    const calcSuggestedStake = (odds: number, isArb: boolean) => {
+    // Suggesting stakes using basic fractional bankroll management safely mapped
+    const calcSuggestedStake = (odds: number) => {
       if (bankroll <= 0) return 0;
-      if (isArb) return bankroll * 0.15 // 15% on sure bets (Arbitrage)
-      if (odds < 1.5) return bankroll * 0.05 // 5% for very safe
-      if (odds < 2.5) return bankroll * 0.03 // 3% for medium
-      return bankroll * 0.01 // 1% for risky
-    }
-
-    const getRiskLevel = (odds: number, isArb: boolean) => {
-      if (isArb) return '🔒 ARBITRAGE SUREBET'
-      if (odds < 1.5) return 'Low Risk / Safer'
-      if (odds < 2.5) return 'Medium Risk'
-      return 'High Risk / Volatile'
+      if (odds < 1.3) return bankroll * 0.05 // 5% for very safe
+      if (odds < 1.6) return bankroll * 0.03 // 3% for safe
+      if (odds < 2.0) return bankroll * 0.02 // 2% for moderate
+      return bankroll * 0.005 // 0.5% for risky
     }
 
     const suggestions = []
@@ -35,58 +28,67 @@ export async function GET(request: Request) {
     for (const game of games) {
       if (!game.bookmakers || game.bookmakers.length === 0) continue;
       
-      let bestHome = 0;
-      let bestAway = 0;
-      let bestDraw = 0;
-      let hasDraw = false;
+      let lowestOverallOdds = 999;
+      let favoredTeam = "";
 
-      // Find best odds globally mapping across bookmakers
+      // Step 1: Determine the heavy favorite across the market safely
+      const firstH2H = game.bookmakers[0]?.markets.find((m: {key: string; outcomes: {name: string, price: number}[]}) => m.key === 'h2h');
+      if (!firstH2H) continue;
+      for (const out of firstH2H.outcomes) {
+         if (out.name !== 'Draw' && out.price < lowestOverallOdds) {
+             lowestOverallOdds = out.price;
+             favoredTeam = out.name;
+         }
+      }
+
+      // Step 2: Now find the BEST price for that safe favoredTeam across ALL bookies to maximize value
+      let bestPriceForFavored = 0;
+      let bestBookieTitle = "";
+
       for (const bookie of game.bookmakers) {
-        const h2h = bookie.markets.find((m: { key: string; outcomes: {name: string, price: number}[] }) => m.key === 'h2h');
+        const h2h = bookie.markets.find((m: {key: string; outcomes: {name: string, price: number}[]}) => m.key === 'h2h');
         if (!h2h) continue;
-        
-        for (const outcome of h2h.outcomes) {
-          if (outcome.name === game.home_team) bestHome = Math.max(bestHome, outcome.price)
-          else if (outcome.name === game.away_team) bestAway = Math.max(bestAway, outcome.price)
-          else if (outcome.name === 'Draw') {
-            bestDraw = Math.max(bestDraw, outcome.price)
-            hasDraw = true
-          }
+        const out = h2h.outcomes.find((o: {name: string, price: number}) => o.name === favoredTeam);
+        if (out && out.price > bestPriceForFavored) {
+           bestPriceForFavored = out.price;
+           bestBookieTitle = bookie.title;
         }
       }
 
-      if (bestHome === 0 || bestAway === 0) continue;
+      // ONLY suggest safe bets where the absolute best odds are solidly probable (e.g., less than 2.00)
+      if (bestPriceForFavored === 0 || bestPriceForFavored >= 2.0) continue; 
 
-      // Arbitrage Math Calculation Formula (Implied Probability < 1.0)
-      let impliedProb = (1 / bestHome) + (1 / bestAway)
-      if (hasDraw && bestDraw > 0) impliedProb += (1 / bestDraw)
+      // Calculate exact risk % profile based on Implied probability
+      const impliedProb = 1 / bestPriceForFavored;
+      const riskPercent = (1 - impliedProb) * 100;
       
-      const isArb = impliedProb < 1.0;
-
-      // Pick the favorite (safest outcome) to suggest natively
-      const bestOdds = Math.min(bestHome, bestAway)
+      let riskLabel = 'Low Risk';
+      if (bestPriceForFavored < 1.3) riskLabel = 'Extremely Safe';
+      else if (bestPriceForFavored < 1.5) riskLabel = 'Very Safe';
+      else if (bestPriceForFavored < 1.7) riskLabel = 'Safe';
+      else if (bestPriceForFavored < 2.0) riskLabel = 'Moderate Risk';
 
       suggestions.push({
         id: game.id,
         match: `${game.home_team} vs ${game.away_team}`,
-        odds: bestOdds,
-        risk: getRiskLevel(bestOdds, isArb),
-        suggestedStake: calcSuggestedStake(bestOdds, isArb),
-        isArb
+        commence_time: game.commence_time,
+        sport: game.sport_title,
+        favoredTeam: favoredTeam,
+        odds: bestPriceForFavored,
+        bookmaker: bestBookieTitle,
+        riskLabel: riskLabel,
+        riskPercent: riskPercent,
+        suggestedStake: calcSuggestedStake(bestPriceForFavored),
       })
     }
 
-    // Sort priority logic: Arbs first, then lowest risk (lowest odds)
-    suggestions.sort((a, b) => {
-      if (a.isArb && !b.isArb) return -1
-      if (!a.isArb && b.isArb) return 1
-      return a.odds - b.odds
-    })
+    // Sort priority logic strictly by Safest Games (lowest risk %)
+    suggestions.sort((a, b) => a.riskPercent - b.riskPercent)
 
-    // Return the top 5 highest-valued suggestions
-    return NextResponse.json(suggestions.slice(0, 5));
+    // Return as many options as safely possible (up to 30)
+    return NextResponse.json(suggestions.slice(0, 30));
   } catch (error) {
     console.error(error)
-    return NextResponse.json([{id: "error", match: "Live API Connection Issue", odds: 1.0, risk: "N/A", suggestedStake: 0}])
+    return NextResponse.json([])
   }
 }

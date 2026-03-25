@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WealthFlow - Bet Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed-variant": "#930013",
+              "on-tertiary": "#68000a",
+              "secondary-container": "#0566d9",
+              "primary-container": "#10b981",
+              "on-primary-fixed": "#002113",
+              "surface-container-low": "#1c1b1b",
+              "on-error": "#690005",
+              "on-secondary": "#002e6a",
+              "on-secondary-fixed-variant": "#004395",
+              "on-tertiary-container": "#79000e",
+              "error": "#ffb4ab",
+              "tertiary-fixed": "#ffdad7",
+              "primary-fixed": "#6ffbbe",
+              "surface": "#131313",
+              "surface-bright": "#393939",
+              "surface-container-highest": "#353534",
+              "surface-tint": "#4edea3",
+              "on-surface-variant": "#bbcabf",
+              "on-background": "#e5e2e1",
+              "on-primary-fixed-variant": "#005236",
+              "tertiary": "#ffb3ad",
+              "inverse-surface": "#e5e2e1",
+              "on-primary-container": "#00422b",
+              "secondary-fixed": "#d8e2ff",
+              "surface-dim": "#131313",
+              "surface-container-lowest": "#0e0e0e",
+              "error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb3ad",
+              "inverse-primary": "#006c49",
+              "surface-variant": "#353534",
+              "outline": "#86948a",
+              "primary-fixed-dim": "#4edea3",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-secondary-container": "#e6ecff",
+              "primary": "#4edea3",
+              "on-primary": "#003824",
+              "on-error-container": "#ffdad6",
+              "on-surface": "#e5e2e1",
+              "secondary": "#adc6ff",
+              "tertiary-container": "#ff7a73",
+              "surface-container": "#201f1f",
+              "background": "#131313",
+              "surface-container-high": "#2a2a2a",
+              "inverse-on-surface": "#313030",
+              "on-secondary-fixed": "#001a42",
+              "outline-variant": "#3c4a42",
+              "on-tertiary-fixed": "#410004"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-panel {
+            background: rgba(32, 31, 31, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-24">
+<!-- Top AppBar (Back Navigation Focus) -->
+<header class="fixed top-0 w-full z-50 bg-[#131313]/60 backdrop-blur-md flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-high text-on-surface hover:opacity-80 transition-opacity active:scale-95">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-['Inter'] font-bold text-2xl tracking-tight text-on-surface">Bet Details</h1>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="share">share</span>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors cursor-pointer" data-icon="more_vert">more_vert</span>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto space-y-8">
+<!-- Main Event Hero Card -->
+<section class="relative overflow-hidden rounded-xl bg-surface-container-low p-8 shadow-[0_24px_48px_rgba(0,0,0,0.4)]">
+<div class="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-3xl -mr-10 -mt-10"></div>
+<div class="flex flex-col gap-2 relative z-10">
+<div class="flex items-center gap-2">
+<span class="text-[10px] uppercase tracking-[0.2em] font-bold text-primary px-2 py-0.5 rounded-md bg-primary/10">Premier League</span>
+<span class="text-[10px] uppercase tracking-[0.2em] font-bold text-on-surface-variant">May 19, 2024</span>
+</div>
+<h2 class="text-3xl md:text-4xl font-black tracking-tighter text-on-surface leading-tight mt-2">
+                    Man City <span class="text-primary-fixed-dim">vs</span> Arsenal
+                </h2>
+<div class="mt-6 flex flex-wrap gap-4">
+<div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-container-high">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="sports_soccer">sports_soccer</span>
+<span class="text-sm font-semibold">Match Result: Home Win</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Stats Grid (Bento Style) -->
+<section class="grid grid-cols-2 gap-4">
+<!-- Odds Card -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col justify-between aspect-square md:aspect-auto">
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-on-surface-variant">Odds</span>
+<div class="flex items-baseline gap-1">
+<span class="text-4xl font-bold tracking-tight text-primary">1.85</span>
+</div>
+</div>
+<!-- Stake Card -->
+<div class="bg-surface-container-high rounded-xl p-6 flex flex-col justify-between aspect-square md:aspect-auto">
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-on-surface-variant">Stake</span>
+<div class="flex items-baseline gap-1">
+<span class="text-xl font-medium text-primary">₦</span>
+<span class="text-3xl font-bold tracking-tight text-on-surface">5,000</span>
+</div>
+</div>
+<!-- Potential Win (Asymmetric Layout) -->
+<div class="col-span-2 bg-primary-container/10 border border-primary/10 rounded-xl p-8 flex flex-col items-center justify-center gap-2">
+<span class="text-[10px] uppercase tracking-[0.1em] font-bold text-primary">Potential Return</span>
+<div class="flex items-baseline gap-2">
+<span class="text-2xl font-light text-primary">₦</span>
+<span class="text-5xl font-black tracking-tighter text-on-surface">9,250</span>
+</div>
+</div>
+<!-- Status Card -->
+<div class="col-span-2 flex items-center justify-between bg-surface-container-high rounded-xl px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+<span class="text-sm font-medium text-on-surface">Status</span>
+</div>
+<span class="text-sm font-bold text-primary tracking-wide">Pending</span>
+</div>
+</section>
+<!-- Update Result Section -->
+<section class="space-y-6 pt-4">
+<div class="flex items-center gap-4">
+<h3 class="text-lg font-bold tracking-tight text-on-surface">Update Result</h3>
+<div class="h-[1px] flex-1 bg-outline-variant/20"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Win Button -->
+<button class="group flex flex-col items-center justify-center gap-3 p-8 rounded-xl bg-primary-container text-on-primary-container hover:opacity-90 active:scale-95 transition-all duration-300 shadow-xl shadow-primary/10">
+<span class="material-symbols-outlined text-4xl" data-icon="check_circle" data-weight="fill" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-bold tracking-tight text-lg">Win</span>
+<span class="text-xs font-medium opacity-70">+₦4,250 Profit</span>
+</button>
+<!-- Loss Button -->
+<button class="group flex flex-col items-center justify-center gap-3 p-8 rounded-xl bg-tertiary-container text-on-tertiary-container hover:opacity-90 active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined text-4xl" data-icon="cancel">cancel</span>
+<span class="font-bold tracking-tight text-lg">Loss</span>
+<span class="text-xs font-medium opacity-70">-₦5,000 Stake</span>
+</button>
+<!-- Void Button -->
+<button class="group flex flex-col items-center justify-center gap-3 p-8 rounded-xl bg-surface-container-highest text-on-surface hover:bg-surface-bright active:scale-95 transition-all duration-300">
+<span class="material-symbols-outlined text-4xl text-on-surface-variant" data-icon="history_ambivalent">history</span>
+<span class="font-bold tracking-tight text-lg">Void</span>
+<span class="text-xs font-medium opacity-70">Stake Refunded</span>
+</button>
+</div>
+</section>
+<!-- Secondary Meta Info -->
+<section class="p-6 rounded-xl border border-outline-variant/10 bg-surface-container-lowest flex flex-col gap-4">
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Bet ID</span>
+<span class="font-mono text-on-surface">#WF-29384-LX</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Placed At</span>
+<span class="text-on-surface">May 18, 2024 • 14:22</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-on-surface-variant">Bookmaker</span>
+<span class="text-on-surface font-semibold">WealthFlow Direct</span>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Contextual Active State: Betting) -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-3xl bg-[#131313]/60 backdrop-blur-md flex justify-around items-center px-4 pt-3 pb-8 w-full shadow-[0_-4px_24px_rgba(16,185,129,0.06)]">
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 transition-all duration-300 tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 transition-all duration-300 tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Accounts</span>
+</div>
+<div class="flex flex-col items-center justify-center text-emerald-500 bg-emerald-500/10 rounded-xl px-3 py-1 transition-all duration-300 tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="Casino" style="font-variation-settings: 'FILL' 1;">casino</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Betting</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 transition-all duration-300 tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="target">target</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Goals</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 transition-all duration-300 tap-highlight-none">
+<span class="material-symbols-outlined" data-icon="insights">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Insights</span>
+</div>
+</nav>
+</body></html>

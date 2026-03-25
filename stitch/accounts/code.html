@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>WealthFlow - My Accounts</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-tertiary-fixed-variant": "#930013",
+              "on-tertiary": "#68000a",
+              "secondary-container": "#0566d9",
+              "primary-container": "#10b981",
+              "on-primary-fixed": "#002113",
+              "surface-container-low": "#1c1b1b",
+              "on-error": "#690005",
+              "on-secondary": "#002e6a",
+              "on-secondary-fixed-variant": "#004395",
+              "on-tertiary-container": "#79000e",
+              "error": "#ffb4ab",
+              "tertiary-fixed": "#ffdad7",
+              "primary-fixed": "#6ffbbe",
+              "surface": "#131313",
+              "surface-bright": "#393939",
+              "surface-container-highest": "#353534",
+              "surface-tint": "#4edea3",
+              "on-surface-variant": "#bbcabf",
+              "on-background": "#e5e2e1",
+              "on-primary-fixed-variant": "#005236",
+              "tertiary": "#ffb3ad",
+              "inverse-surface": "#e5e2e1",
+              "on-primary-container": "#00422b",
+              "secondary-fixed": "#d8e2ff",
+              "surface-dim": "#131313",
+              "surface-container-lowest": "#0e0e0e",
+              "error-container": "#93000a",
+              "tertiary-fixed-dim": "#ffb3ad",
+              "inverse-primary": "#006c49",
+              "surface-variant": "#353534",
+              "outline": "#86948a",
+              "primary-fixed-dim": "#4edea3",
+              "secondary-fixed-dim": "#adc6ff",
+              "on-secondary-container": "#e6ecff",
+              "primary": "#4edea3",
+              "on-primary": "#003824",
+              "on-error-container": "#ffdad6",
+              "on-surface": "#e5e2e1",
+              "secondary": "#adc6ff",
+              "tertiary-container": "#ff7a73",
+              "surface-container": "#201f1f",
+              "background": "#131313",
+              "surface-container-high": "#2a2a2a",
+              "inverse-on-surface": "#313030",
+              "on-secondary-fixed": "#001a42",
+              "outline-variant": "#3c4a42",
+              "on-tertiary-fixed": "#410004"
+            },
+            fontFamily: {
+              "headline": ["Inter"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      body {
+        background-color: #131313;
+        color: #e5e2e1;
+        font-family: 'Inter', sans-serif;
+      }
+      .glass-card {
+        background: linear-gradient(135deg, rgba(53, 53, 52, 0.4) 0%, rgba(28, 27, 27, 0.2) 100%);
+        backdrop-filter: blur(10px);
+      }
+      .naira-symbol {
+        font-weight: 300;
+      }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#131313]/60 backdrop-blur-md flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Close-up professional portrait of a confident man with a minimalist background, soft cinematic lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCV9zGv1DN4RV4GC68q83LCWqltxiHKREmWVSXS6eo4JI-Cr4TD4y6GgqSbXpWtBFz8BQHSONU1s3HyLmaxNdKa2BtR5csvtuVSCJTN7yiv2zzCNsIX2uo4Z0ocaFi4K7h-ziJzn93lmM_H_n7ZTxKP3xtqGrMjt7PspTSwVQwO9eYfXB_WDxAV_1k_AeRv2G4mQEOMedk9ZytSpuFNMoMmk1mYyZlM8GzP03eYL2er0MmrcRxZZ7vaOc-sZPj_d9IARLIGjQX77nk"/>
+</div>
+<span class="text-emerald-500 font-black tracking-tighter font-['Inter'] font-bold text-2xl tracking-tight">WealthFlow</span>
+</div>
+<button class="text-emerald-500 hover:opacity-80 transition-opacity scale-95 active:duration-100">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-24 px-6 max-w-2xl mx-auto">
+<!-- Headline Section -->
+<section class="mb-12">
+<h1 class="text-[3.5rem] font-black leading-tight tracking-tighter text-on-surface">
+                My Accounts
+            </h1>
+<p class="text-on-surface-variant font-medium tracking-wide text-sm uppercase opacity-60 mt-2">
+                The Sovereign Ledger • Total Allocation
+            </p>
+</section>
+<!-- Transfer Funds CTA (Signature CTA) -->
+<div class="mb-10">
+<button class="w-full py-5 rounded-full bg-gradient-to-br from-primary-container to-primary-fixed-dim text-on-primary-container font-bold text-lg flex items-center justify-center gap-2 shadow-[0_4px_24px_rgba(16,185,129,0.15)] hover:opacity-90 transition-all">
+<span class="material-symbols-outlined">swap_horiz</span>
+                Transfer Funds
+            </button>
+</div>
+<!-- Accounts Bento-ish Grid -->
+<div class="flex flex-col gap-6">
+<!-- Savings Card -->
+<div class="glass-card rounded-xl p-8 border border-outline-variant/10 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-6">
+<span class="text-primary bg-primary/10 px-3 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase">73.4% Weight</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-sm font-semibold tracking-wider uppercase mb-1">Locked Funds</span>
+<h2 class="text-4xl font-extrabold text-on-surface mb-4 flex items-baseline">
+<span class="naira-symbol text-primary text-2xl mr-1">₦</span>250,000.00
+                    </h2>
+<div class="flex items-center gap-2">
+<span class="flex items-center text-primary text-sm font-bold bg-primary/5 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span>
+                            +2.4%
+                        </span>
+<span class="text-on-surface-variant/40 text-[10px] uppercase font-bold tracking-tighter">This Week Performance</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-primary w-[73.4%] rounded-full"></div>
+</div>
+</div>
+<!-- Betting Card -->
+<div class="glass-card rounded-xl p-8 border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-6">
+<span class="text-on-surface-variant/60 bg-surface-container-high px-3 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase">19.2% Weight</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-sm font-semibold tracking-wider uppercase mb-1">Risk Capital</span>
+<h2 class="text-4xl font-extrabold text-on-surface mb-4 flex items-baseline">
+<span class="naira-symbol text-primary text-2xl mr-1">₦</span>65,500.00
+                    </h2>
+<div class="flex items-center gap-2">
+<span class="flex items-center text-primary text-sm font-bold bg-primary/5 px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs mr-1">trending_up</span>
+                            +1.8%
+                        </span>
+<span class="text-on-surface-variant/40 text-[10px] uppercase font-bold tracking-tighter">Active Positions</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary-container w-[19.2%] rounded-full"></div>
+</div>
+</div>
+<!-- Liquidity Card -->
+<div class="glass-card rounded-xl p-8 border border-outline-variant/10 relative overflow-hidden">
+<div class="absolute top-0 right-0 p-6">
+<span class="text-on-surface-variant/60 bg-surface-container-high px-3 py-1 rounded-md text-[10px] font-bold tracking-widest uppercase">7.4% Weight</span>
+</div>
+<div class="flex flex-col">
+<span class="text-on-surface-variant text-sm font-semibold tracking-wider uppercase mb-1">Spendable Cash</span>
+<h2 class="text-4xl font-extrabold text-on-surface mb-4 flex items-baseline">
+<span class="naira-symbol text-primary text-2xl mr-1">₦</span>25,000.00
+                    </h2>
+<div class="flex items-center gap-2">
+<span class="flex items-center text-on-surface-variant text-sm font-bold bg-surface-container-highest px-2 py-0.5 rounded">
+<span class="material-symbols-outlined text-xs mr-1">video_stable</span>
+                            0.0%
+                        </span>
+<span class="text-on-surface-variant/40 text-[10px] uppercase font-bold tracking-tighter">Immediate Access</span>
+</div>
+</div>
+<div class="mt-8 h-1 w-full bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-outline-variant w-[7.4%] rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Allocation Chart Visualization (Decorative Editorial Element) -->
+<div class="mt-16 p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-32 h-32 rounded-full border-8 border-primary border-t-secondary-container border-r-secondary-container/50 border-b-outline-variant/20 mb-6 relative flex items-center justify-center">
+<span class="text-xs font-black uppercase text-on-surface-variant">Asset<br/>Mix</span>
+</div>
+<h3 class="text-on-surface font-bold text-lg">Portfolio Diversification</h3>
+<p class="text-on-surface-variant text-sm max-w-xs mt-2 opacity-70">Your wealth is currently optimized for long-term growth with a 19.2% high-yield risk exposure.</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-3xl bg-[#131313]/60 backdrop-blur-md tonal-shift bg-zinc-900/50 shadow-[0_-4px_24px_rgba(16,185,129,0.06)] flex justify-around items-center px-4 pt-3 pb-8 w-full">
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 tap-highlight-none transition-all duration-300" href="#">
+<span class="material-symbols-outlined">grid_view</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-emerald-500 bg-emerald-500/10 rounded-xl px-3 py-1 tap-highlight-none transition-all duration-300" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold">Accounts</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 tap-highlight-none transition-all duration-300" href="#">
+<span class="material-symbols-outlined">casino</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold">Betting</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 tap-highlight-none transition-all duration-300" href="#">
+<span class="material-symbols-outlined">target</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold">Goals</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 hover:text-emerald-400 tap-highlight-none transition-all duration-300" href="#">
+<span class="material-symbols-outlined">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-[0.05em] font-semibold">Insights</span>
+</a>
+</nav>
+</body></html>

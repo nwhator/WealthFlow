@@ -199,3 +199,5 @@ CREATE POLICY "Users can manage their own arbitrage opportunities."
 INSERT INTO public.bookmakers (name) VALUES 
 ('Bet365'), ('1xBet'), ('BetWay'), ('SportyBet'), ('BetKing'), ('Melbet'), ('Bwin')
 ON CONFLICT (name) DO NOTHING;
+
+-- Updated

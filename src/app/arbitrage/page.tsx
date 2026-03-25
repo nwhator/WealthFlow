@@ -47,10 +47,19 @@ export default function ArbitrageDashboard() {
     setLoading(true)
     try {
       const res = await fetch(`/api/arbitrage/calculate?investment=${investment}`)
+      if (!res.ok) {
+        throw new Error('API request failed');
+      }
       const data = await res.json()
-      setOpportunities(data)
+      if (Array.isArray(data)) {
+        setOpportunities(data)
+      } else {
+        setOpportunities([])
+        console.error('API returned non-array data:', data)
+      }
     } catch (error) {
       console.error('Failed to fetch arbitrage data', error)
+      setOpportunities([])
     } finally {
       setLoading(false)
     }

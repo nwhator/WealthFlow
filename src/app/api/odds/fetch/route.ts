@@ -40,16 +40,16 @@ export async function GET() {
     }
 
     const rawGames = allData.flat();
-    const normalizedData = (rawGames as OddsAPIGame[]).map((game: OddsAPIGame) => ({
+    const normalizedData = (rawGames as OddsAPIGame[]).filter(g => g && g.id && Array.isArray(g.bookmakers)).map((game: OddsAPIGame) => ({
       id: game.id,
       match: `${game.home_team} vs ${game.away_team}`,
       sport: game.sport_title,
       commence_time: game.commence_time,
       bookmakers: game.bookmakers.map((b: OddsAPIBookmaker) => ({
         name: b.title,
-        markets: b.markets.map((m: OddsAPIMarket) => ({
+        markets: (b.markets || []).map((m: OddsAPIMarket) => ({
           key: m.key,
-          outcomes: m.outcomes.map((o: OddsAPIOutcome) => ({
+          outcomes: (m.outcomes || []).map((o: OddsAPIOutcome) => ({
             name: o.name,
             odds: o.price,
             bookmaker: b.title

@@ -121,7 +121,6 @@ export default function SuggestedBets({ bankroll }: { bankroll: number }) {
                 <button 
                    onClick={(e) => {
                       e.stopPropagation();
-                      // @ts-expect-error - Custom event
                       window.dispatchEvent(new CustomEvent('fillBetForm', { detail: s }))
                    }}
                    className="w-full mt-4 bg-primary/10 hover:bg-primary/20 text-primary font-bold py-2.5 rounded-lg transition-colors border border-primary/20 text-xs active:scale-[0.98]"

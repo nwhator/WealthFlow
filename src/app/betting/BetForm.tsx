@@ -26,9 +26,7 @@ export default function BetForm() {
       if (formEl) window.scrollTo({ top: formEl.offsetTop - 100, behavior: 'smooth' });
     };
     
-    // @ts-expect-error - Custom event
     window.addEventListener('fillBetForm', handleFill);
-    // @ts-expect-error - Custom event
     return () => window.removeEventListener('fillBetForm', handleFill);
   }, []);
 

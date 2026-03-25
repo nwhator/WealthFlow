@@ -1,5 +1,6 @@
 import { login } from './actions'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function LoginPage({
   searchParams,
@@ -9,7 +10,10 @@ export default function LoginPage({
   return (
     <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
       <div className="w-full max-w-md space-y-8 bg-surface-container p-8 rounded-2xl border border-outline-variant/10">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
+          <div className="w-16 h-16 rounded-xl overflow-hidden mb-4 border border-outline-variant/20 relative shadow-xl shadow-primary/10">
+            <Image src="/logo.png" alt="WealthFlow Logo" fill className="object-cover" />
+          </div>
           <h2 className="text-3xl font-black text-emerald-500 tracking-tight">WealthFlow</h2>
           <p className="mt-2 text-sm text-on-surface-variant">Sign in to your account</p>
         </div>

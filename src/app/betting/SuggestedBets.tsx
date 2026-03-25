@@ -112,6 +112,22 @@ export default function SuggestedBets({ bankroll }: { bankroll: number }) {
                      <p className="text-xs font-bold text-on-surface">{s.sport}</p>
                   </div>
                 </div>
+
+                <div className="flex justify-center mt-3 opacity-70 items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">schedule</span>
+                  <p className="text-[10px] font-bold">Starts: {new Date(s.commence_time).toLocaleString()}</p>
+                </div>
+
+                <button 
+                   onClick={(e) => {
+                      e.stopPropagation();
+                      // @ts-ignore
+                      window.dispatchEvent(new CustomEvent('fillBetForm', { detail: s }))
+                   }}
+                   className="w-full mt-4 bg-primary/10 hover:bg-primary/20 text-primary font-bold py-2.5 rounded-lg transition-colors border border-primary/20 text-xs active:scale-[0.98]"
+                >
+                   Autofill to Slip
+                </button>
               </div>
             )}
           </div>

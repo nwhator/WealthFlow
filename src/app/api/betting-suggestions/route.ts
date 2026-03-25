@@ -9,12 +9,19 @@ export async function GET(request: Request) {
   const apiKey = '294be1105ed6a6629da4fb878ab371f7'
   
   try {
-    // Fetch from a wide array of active global sports simultaneously to guarantee a massive pool of up to 50 matches
+    // Fetch from highly predictable, statistically skewed global niche markets (College basketball mismatches, MMA, Cricket, Euroleague)
     const endpoints = [
        `https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
        `https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
        `https://api.the-odds-api.com/v4/sports/basketball_nba/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`,
-       `https://api.the-odds-api.com/v4/sports/tennis_atp/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`
+       `https://api.the-odds-api.com/v4/sports/tennis_atp/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/tennis_wta/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/soccer_uefa_champs_league/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/basketball_ncaab/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`, // US College Bball (Extreme skill mismatches)
+       `https://api.the-odds-api.com/v4/sports/basketball_euroleague/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`, // Predictable Heavy Favorites
+       `https://api.the-odds-api.com/v4/sports/mma_mixed_martial_arts/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`, // MMA/UFC (Frequent heavy locks)
+       `https://api.the-odds-api.com/v4/sports/cricket_ipl/odds/?apiKey=${apiKey}&regions=uk,au&markets=h2h`, // Indian Premier League
+       `https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h` // Global Hockey
     ];
 
     const responses = await Promise.all(endpoints.map(ep => fetch(ep, { next: { revalidate: 60 } })));

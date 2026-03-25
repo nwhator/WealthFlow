@@ -13,19 +13,22 @@ export default function BetForm() {
   const bookmakerRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    const handleFill = (e: any) => {
-      if (matchRef.current) matchRef.current.value = e.detail.match || '';
-      if (oddsRef.current) oddsRef.current.value = e.detail.odds?.toFixed(2) || '';
-      if (stakeRef.current) stakeRef.current.value = Math.floor(e.detail.suggestedStake).toString() || '';
-      if (bookmakerRef.current) bookmakerRef.current.value = e.detail.bookmaker || '';
+    const handleFill = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (!detail) return;
+      
+      if (matchRef.current) matchRef.current.value = detail.match || '';
+      if (oddsRef.current) oddsRef.current.value = detail.odds?.toFixed(2) || '';
+      if (stakeRef.current) stakeRef.current.value = Math.floor(detail.suggestedStake).toString() || '';
+      if (bookmakerRef.current) bookmakerRef.current.value = detail.bookmaker || '';
       
       const formEl = document.getElementById('bet-form');
       if (formEl) window.scrollTo({ top: formEl.offsetTop - 100, behavior: 'smooth' });
     };
     
-    // @ts-ignore
+    // @ts-expect-error - Custom event
     window.addEventListener('fillBetForm', handleFill);
-    // @ts-ignore
+    // @ts-expect-error - Custom event
     return () => window.removeEventListener('fillBetForm', handleFill);
   }, []);
 

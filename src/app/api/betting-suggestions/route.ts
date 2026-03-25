@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
       // Find best odds globally mapping across bookmakers
       for (const bookie of game.bookmakers) {
-        const h2h = bookie.markets.find((m: any) => m.key === 'h2h');
+        const h2h = bookie.markets.find((m: { key: string; outcomes: {name: string, price: number}[] }) => m.key === 'h2h');
         if (!h2h) continue;
         
         for (const outcome of h2h.outcomes) {

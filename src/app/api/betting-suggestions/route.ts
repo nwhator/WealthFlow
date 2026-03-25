@@ -9,17 +9,31 @@ export async function GET(request: Request) {
   const apiKey = '294be1105ed6a6629da4fb878ab371f7'
   
   try {
-    const res = await fetch(`https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey=${apiKey}&regions=eu,us,uk&markets=h2h`, { next: { revalidate: 60 } })
-    if (!res.ok) throw new Error("Failed to fetch odds")
-    const games = await res.json()
+    // Fetch from a wide array of active global sports simultaneously to guarantee a massive pool of up to 50 matches
+    const endpoints = [
+       `https://api.the-odds-api.com/v4/sports/upcoming/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/soccer_epl/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/basketball_nba/odds/?apiKey=${apiKey}&regions=us,uk&markets=h2h`,
+       `https://api.the-odds-api.com/v4/sports/tennis_atp/odds/?apiKey=${apiKey}&regions=eu,uk&markets=h2h`
+    ];
 
-    // Suggesting stakes using basic fractional bankroll management safely mapped
+    const responses = await Promise.all(endpoints.map(ep => fetch(ep, { next: { revalidate: 60 } })));
+    const dataArrays = await Promise.all(responses.map(res => res.ok ? res.json() : []));
+    
+    // Flatten arrays and Deduplicate any overlapping games natively by ID
+    const rawGames = dataArrays.flat();
+    const games = Array.from(new Map(rawGames.map(g => [g.id, g])).values());
+
+    // Bankroll Fractional Split Logic:
+    // Because matches happen sequentially rather than at exactly the same time,
+    // we scale the percentages heavily to effectively reuse the bankroll across safe events throughout the day/week.
     const calcSuggestedStake = (odds: number) => {
       if (bankroll <= 0) return 0;
-      if (odds < 1.3) return bankroll * 0.05 // 5% for very safe
-      if (odds < 1.6) return bankroll * 0.03 // 3% for safe
-      if (odds < 2.0) return bankroll * 0.02 // 2% for moderate
-      return bankroll * 0.005 // 0.5% for risky
+      if (odds < 1.3) return bankroll * 0.15 // 15% dedicated to Extremely Safe locks
+      if (odds < 1.5) return bankroll * 0.10 // 10% dedicated for Very Safe
+      if (odds < 1.7) return bankroll * 0.05 // 5% for safe
+      if (odds < 2.0) return bankroll * 0.03 // 3% for moderate risk
+      return bankroll * 0.01 // 1% for wildcard risky plays
     }
 
     const suggestions = []
@@ -44,19 +58,36 @@ export async function GET(request: Request) {
       // Step 2: Now find the BEST price for that safe favoredTeam across ALL bookies to maximize value
       let bestPriceForFavored = 0;
       let bestBookieTitle = "";
+      let bestHome = 0;
+      let bestAway = 0;
+      let bestDraw = 0;
+      let hasDraw = false;
 
       for (const bookie of game.bookmakers) {
         const h2h = bookie.markets.find((m: {key: string; outcomes: {name: string, price: number}[]}) => m.key === 'h2h');
         if (!h2h) continue;
+        
+        // Track the specific highest odds for the favored team natively
         const out = h2h.outcomes.find((o: {name: string, price: number}) => o.name === favoredTeam);
         if (out && out.price > bestPriceForFavored) {
            bestPriceForFavored = out.price;
            bestBookieTitle = bookie.title;
         }
+
+        // Track aggregate odds precisely for margin calculation
+        for (const outcome of h2h.outcomes) {
+          if (outcome.name === game.home_team) bestHome = Math.max(bestHome, outcome.price)
+          else if (outcome.name === game.away_team) bestAway = Math.max(bestAway, outcome.price)
+          else if (outcome.name === 'Draw') {
+            bestDraw = Math.max(bestDraw, outcome.price)
+            hasDraw = true
+          }
+        }
       }
 
       // ONLY suggest safe bets where the absolute best odds are solidly probable (e.g., less than 2.00)
       if (bestPriceForFavored === 0 || bestPriceForFavored >= 2.0) continue; 
+      if (bestHome === 0 || bestAway === 0) continue;
 
       // Calculate exact risk % profile based on Implied probability
       const impliedProb = 1 / bestPriceForFavored;
@@ -67,6 +98,12 @@ export async function GET(request: Request) {
       else if (bestPriceForFavored < 1.5) riskLabel = 'Very Safe';
       else if (bestPriceForFavored < 1.7) riskLabel = 'Safe';
       else if (bestPriceForFavored < 2.0) riskLabel = 'Moderate Risk';
+
+      // Calculate Exact Bookmaker Margin (Sum of highest probabilities globally - 1)
+      let impliedProbSum = (1 / bestHome) + (1 / bestAway)
+      if (hasDraw && bestDraw > 0) impliedProbSum += (1 / bestDraw)
+      
+      const bookmakerMargin = (impliedProbSum - 1) * 100;
 
       suggestions.push({
         id: game.id,
@@ -79,14 +116,15 @@ export async function GET(request: Request) {
         riskLabel: riskLabel,
         riskPercent: riskPercent,
         suggestedStake: calcSuggestedStake(bestPriceForFavored),
+        margin: bookmakerMargin > 0 ? bookmakerMargin : 0 // Fallback clamp
       })
     }
 
     // Sort priority logic strictly by Safest Games (lowest risk %)
     suggestions.sort((a, b) => a.riskPercent - b.riskPercent)
 
-    // Return as many options as safely possible (up to 30)
-    return NextResponse.json(suggestions.slice(0, 30));
+    // Return the top 50 absolute safe matches scaled cleanly!
+    return NextResponse.json(suggestions.slice(0, 50));
   } catch (error) {
     console.error(error)
     return NextResponse.json([])

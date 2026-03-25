@@ -13,6 +13,7 @@ type Suggestion = {
   riskLabel: string
   riskPercent: number
   suggestedStake: number
+  margin: number
 }
 
 export default function SuggestedBets({ bankroll }: { bankroll: number }) {
@@ -75,29 +76,41 @@ export default function SuggestedBets({ bankroll }: { bankroll: number }) {
               <div className="mt-4 pt-4 border-t border-outline-variant/10 text-xs text-on-surface-variant transition-all">
                 <div className="grid grid-cols-2 gap-2">
                   <div className="bg-surface-container-highest p-3 rounded-lg flex flex-col items-center">
-                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1">Exact Risk Profile</p>
+                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1 text-on-surface-variant">Exact Risk Profile</p>
                     <p className="text-on-surface font-black text-base">{s.riskPercent.toFixed(1)}%</p>
                   </div>
                   <div className="bg-surface-container-highest p-3 rounded-lg flex flex-col items-center">
-                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1">Win Probability</p>
+                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1 text-on-surface-variant">Win Probability</p>
                     <p className="text-primary font-black text-base">{(100 - s.riskPercent).toFixed(1)}%</p>
                   </div>
                 </div>
                 
-                <div className="flex justify-between items-center bg-surface-container-highest p-3 rounded-lg mt-2">
-                   <div>
-                     <p className="text-[10px] uppercase font-bold tracking-wider mb-1">Recommended Bookie</p>
-                     <p className="text-on-surface font-bold">{s.bookmaker}</p>
-                   </div>
-                   <div className="text-right">
-                     <p className="text-[10px] uppercase font-bold tracking-wider mb-1">League Scope</p>
-                     <p className="text-on-surface font-bold">{s.sport}</p>
-                   </div>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="flex flex-col items-center justify-center bg-surface-container-highest p-3 rounded-lg">
+                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1 text-on-surface-variant">Bookmaker Value Margin</p>
+                    <p className="text-secondary font-bold text-sm tracking-tight">{s.margin?.toFixed(2)}% House Edge</p>
+                  </div>
+                  <div className="flex flex-col items-center justify-center bg-surface-container-highest p-3 rounded-lg">
+                    <p className="text-[10px] uppercase font-bold tracking-wider mb-1 text-on-surface-variant">Recommended House</p>
+                    <p className="text-on-surface font-bold text-sm text-center">{s.bookmaker}</p>
+                  </div>
                 </div>
 
-                <div className="flex justify-center mt-3 opacity-70 items-center gap-1">
-                  <span className="material-symbols-outlined text-[14px]">schedule</span>
-                  <p className="text-[10px] font-bold">Starts: {new Date(s.commence_time).toLocaleString()}</p>
+                <div className="flex justify-between items-center bg-surface-container p-3 rounded-lg mt-3 border border-outline-variant/10">
+                  <div className="flex items-center gap-1.5 opacity-80">
+                    <span className="material-symbols-outlined text-[16px] text-primary">schedule</span>
+                    <div>
+                      <p className="text-[9px] uppercase tracking-wider font-bold">Start Time</p>
+                      <p className="text-xs font-bold text-on-surface">
+                        {new Date(s.commence_time).toLocaleDateString()} • {new Date(s.commence_time).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="text-right opacity-80">
+                     <p className="text-[9px] uppercase tracking-wider font-bold">League Scope</p>
+                     <p className="text-xs font-bold text-on-surface">{s.sport}</p>
+                  </div>
                 </div>
               </div>
             )}
@@ -105,7 +118,7 @@ export default function SuggestedBets({ bankroll }: { bankroll: number }) {
         ))
         )}
         {bankroll === 0 && (
-            <p className="text-[10px] text-on-surface-variant text-center mt-2 italic shadow-sm">Your bankroll is 0. Transfer funds to receive actual stake amounts!</p>
+            <p className="text-[10px] text-on-surface-variant text-center mt-4 italic">No bankroll detected. Transfer liquid capital over into Betting account!</p>
         )}
       </div>
     </div>

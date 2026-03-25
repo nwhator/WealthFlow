@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { calculateSafeScore } from '@/lib/sports-stats';
 
 export const revalidate = 60; // Cache for 60 seconds
 
@@ -6,7 +7,7 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const bankroll = Number(searchParams.get('bankroll') || 0)
   
-  const apiKey = '294be1105ed6a6629da4fb878ab371f7'
+  const apiKey = process.env.ODDS_API_KEY
   
   try {
     // Fetch from highly predictable, statistically skewed global niche markets (College basketball mismatches, MMA, Cricket, Euroleague)
@@ -130,13 +131,23 @@ export async function GET(request: Request) {
         suggestedStake: calcSuggestedStake(bestPriceForFavored),
         margin: bookmakerMargin > 0 ? bookmakerMargin : 0 // Fallback clamp
       })
-    }
+    // Take top 5 for deep statistical analysis (limited by API-Sports daily 100 request cap)
+    const analyzedMatches = await Promise.all(suggestions.slice(0, 5).map(async (m) => {
+      // Extract team names from "Home vs Away" string
+      const [home, away] = m.match.split(' vs ');
+      const historicalWinProb = await calculateSafeScore(m.sport, home, away);
+      
+      return {
+        ...m,
+        historicalEdge: historicalWinProb > (1 / m.odds) ? 'HIGH' : 'LOW',
+        realWinProb: (historicalWinProb * 100).toFixed(1) + '%'
+      };
+    }));
 
-    // Sort priority logic strictly by Safest Games (lowest risk %)
-    suggestions.sort((a, b) => a.riskPercent - b.riskPercent);
+    // Re-combine and return the top 50 absolute safe matches scaled cleanly!
+    const finalResult = [...analyzedMatches, ...suggestions.slice(5)].sort((a, b) => a.riskPercent - b.riskPercent);
 
-    // Return the top 50 absolute safe matches scaled cleanly!
-    return NextResponse.json(suggestions.slice(0, 50));
+    return NextResponse.json(finalResult.slice(0, 50));
   } catch (error) {
     console.error(error)
     return NextResponse.json([])

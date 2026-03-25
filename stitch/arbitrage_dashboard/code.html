@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>The Sovereign Ledger | Arbitrage Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#131313",
+                        "on-tertiary-fixed": "#410004",
+                        "on-tertiary-container": "#79000e",
+                        "on-error": "#690005",
+                        "surface-tint": "#4edea3",
+                        "surface": "#131313",
+                        "secondary": "#adc6ff",
+                        "primary-container": "#10b981",
+                        "primary": "#4edea3",
+                        "inverse-primary": "#006c49",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-container": "#e6ecff",
+                        "inverse-on-surface": "#313030",
+                        "secondary-container": "#0566d9",
+                        "on-surface-variant": "#bbcabf",
+                        "surface-container-high": "#2a2a2a",
+                        "on-background": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-container": "#00422b",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-primary-fixed-variant": "#005236",
+                        "background": "#131313",
+                        "on-secondary": "#002e6a",
+                        "surface-container-highest": "#353534",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-primary-fixed": "#002113",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary-fixed": "#ffdad7",
+                        "tertiary-container": "#ff7a73",
+                        "primary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#004395",
+                        "error-container": "#93000a",
+                        "surface-container": "#201f1f",
+                        "on-primary": "#003824",
+                        "tertiary": "#ffb3ad",
+                        "on-tertiary": "#68000a",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-container-low": "#1c1b1b",
+                        "outline-variant": "#3c4a42",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline": "#86948a",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#353534",
+                        "on-secondary-fixed": "#001a42",
+                        "on-error-container": "#ffdad6"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter", "sans-serif"],
+                        "body": ["Inter", "sans-serif"],
+                        "label": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #131313;
+            color: #e5e2e1;
+            font-family: 'Inter', sans-serif;
+        }
+        .glass-nav {
+            background: rgba(19, 19, 19, 0.6);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased pb-32">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#131313] dark:bg-[#131313]/60 backdrop-blur-md">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="Professional headshot of a sophisticated male concierge in a sharp suit against a dark minimalist studio background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuApSKGlDOLUajtfmk4fOSVw8TWOguVN-9fiobrSP-xuTB2mz823rdOYKlmKB_VEjsJpG-t1jWmu2b-ptMW_1SXvog0h3ZsKbVa5l77mk1DsU0fPafaPpnLK8jel3C_fWJr18shWIfzyb280DC2T51JN52UlJtsl-GgsiXTjWxGzbEFVv0iFv-2GI1pvIoKL36tExsRQ9RUFBMVySnP3J9mkrOeHJDo2Vz0Pn_6OpKWhU5WdBB489Ttp-VB58mCKw2G34W2rorv_5lc"/>
+</div>
+<h1 class="text-xl font-bold tracking-tighter text-emerald-500 dark:text-emerald-400">The Sovereign Ledger</h1>
+</div>
+<div class="flex items-center gap-6">
+<nav class="hidden md:flex items-center gap-8">
+<span class="text-zinc-500 dark:text-zinc-400 font-medium cursor-pointer hover:bg-zinc-800/50 transition-colors duration-300 px-3 py-1 rounded-lg">Ledger</span>
+<span class="text-emerald-500 dark:text-emerald-400 font-semibold cursor-pointer hover:bg-zinc-800/50 transition-colors duration-300 px-3 py-1 rounded-lg">Arbitrage</span>
+<span class="text-zinc-500 dark:text-zinc-400 font-medium cursor-pointer hover:bg-zinc-800/50 transition-colors duration-300 px-3 py-1 rounded-lg">Analysis</span>
+</nav>
+<div class="p-2 rounded-full hover:bg-zinc-800/50 transition-colors active:scale-95 duration-200 cursor-pointer">
+<span class="material-symbols-outlined text-emerald-500 dark:text-emerald-400" data-icon="notifications">notifications</span>
+</div>
+</div>
+</div>
+</header>
+<main class="pt-24 px-6 max-w-screen-2xl mx-auto">
+<!-- Hero Section / Stats Summary -->
+<section class="mb-12 pt-8">
+<div class="flex flex-col md:flex-row justify-between items-end gap-6">
+<div class="max-w-2xl">
+<span class="label-sm uppercase tracking-[0.05em] text-primary mb-2 block font-medium">Live Market Intelligence</span>
+<h2 class="text-[3.5rem] font-bold tracking-tight leading-tight mb-4 text-on-surface">Arbitrage Desk</h2>
+<p class="text-on-surface-variant text-lg max-w-lg leading-relaxed">
+                        Identify and execute high-yield discrepancies across global sportsbooks in real-time.
+                    </p>
+</div>
+<div class="flex gap-4 mb-2">
+<div class="bg-surface-container-low p-6 rounded-xl min-w-[200px]">
+<p class="label-sm uppercase tracking-widest text-on-surface-variant mb-2">Total Edge Found</p>
+<p class="text-3xl font-bold text-primary tracking-tighter">₦1,240,500</p>
+</div>
+<div class="bg-surface-container-low p-6 rounded-xl min-w-[200px]">
+<p class="label-sm uppercase tracking-widest text-on-surface-variant mb-2">Active Opps</p>
+<p class="text-3xl font-bold text-on-surface tracking-tighter">142</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Filters & Action Bar -->
+<div class="flex flex-wrap items-center justify-between gap-4 mb-8">
+<div class="flex items-center gap-3">
+<button class="px-6 py-2.5 rounded-full bg-primary-container text-on-primary-container font-semibold text-sm transition-all active:scale-95">All Markets</button>
+<button class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium text-sm hover:bg-surface-container-highest transition-colors">Football</button>
+<button class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium text-sm hover:bg-surface-container-highest transition-colors">Basketball</button>
+<button class="px-6 py-2.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium text-sm hover:bg-surface-container-highest transition-colors">Tennis</button>
+</div>
+<div class="flex items-center gap-4">
+<span class="text-sm text-on-surface-variant italic">Last updated: 12s ago</span>
+<button class="flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-lg border border-primary/20 hover:bg-primary/20 transition-all">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span>
+<span class="text-sm font-semibold uppercase tracking-wider">Sync Data</span>
+</button>
+</div>
+</div>
+<!-- Opportunities Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden group hover:bg-surface-container transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex flex-col gap-1">
+<span class="label-sm uppercase tracking-widest text-on-surface-variant font-semibold">NBA Basketball</span>
+<h3 class="headline-sm font-bold text-on-surface">Lakers vs Celtics</h3>
+</div>
+<div class="bg-primary/10 text-primary px-3 py-1 rounded-md border border-primary/20">
+<span class="text-sm font-bold">4.21%</span>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+<img alt="Bet365" class="w-full h-full object-cover" data-alt="Minimalist abstract logo for a premium sports betting brand with geometric shapes in dark theme" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAB09dawNfXMxAt-1V5VAPncAg3_p-jebjVr5dlIn4r9mtNlYkgOOrdYTz-0qsxLEwNOSA4gTf7nvI3vbfPRvz1QiKlQks0uVDvaWPr9aV0KBLkgePby_cOykfTeSENuUyf4EFc24E9rftxZbuqiWGpPIjToK11BRPG3BFk2juRzvLno73x5ABhbPPMGeOyUJdkPcoFXGDYdKw4K63F1oSARZjcUTT9D_wXCfRWEt08Wyu33cjxcgvLEn3yWBqe3FDL2E_Gmp3fkx0"/>
+</div>
+<span class="text-sm font-medium">Bet365 (Lakers)</span>
+</div>
+<span class="text-lg font-bold text-primary">2.10</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center overflow-hidden">
+<img alt="1xBet" class="w-full h-full object-cover" data-alt="Sleek modern digital branding logo with vibrant teal accents on a charcoal background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_WeLNbYd4MdGpFoxKTB-SPNkmpLaQ_IzdScl1wrKYQw9z_nFv1YHulL-mJfzl0AgFvC3aMepqMabMy3P3VI8ViZxeolTToifSIq-MiaNtrQxv3I5aBIFM2wl5mdRWbchF4XUgsqpBotyPL0U9gNvfB31XTyQ8q3mXjqkqTDFf4UCcbsXTm-zfTMUqsWLRXx-vSJ1NsV6hWbERwSslotuGDg8ArOV8g_7cWekMvacaPM5PTFETFzJ8QhJbFzBf1rUfgiMFLUG0l4I"/>
+</div>
+<span class="text-sm font-medium">1xBet (Celtics)</span>
+</div>
+<span class="text-lg font-bold text-primary">2.05</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<div class="flex flex-col">
+<span class="label-sm text-on-surface-variant uppercase tracking-wider">Potential Profit</span>
+<span class="text-xl font-bold text-on-surface">₦8,420.00</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-transform">
+                            Invest
+                        </button>
+</div>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden group hover:bg-surface-container transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex flex-col gap-1">
+<span class="label-sm uppercase tracking-widest text-on-surface-variant font-semibold">Premier League</span>
+<h3 class="headline-sm font-bold text-on-surface">Arsenal vs Man City</h3>
+</div>
+<div class="bg-primary/10 text-primary px-3 py-1 rounded-md border border-primary/20">
+<span class="text-sm font-bold">2.85%</span>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-500" data-icon="token">token</span>
+<span class="text-sm font-medium">BetKing (Home)</span>
+</div>
+<span class="text-lg font-bold text-primary">3.20</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-500" data-icon="token">token</span>
+<span class="text-sm font-medium">SportyBet (Draw)</span>
+</div>
+<span class="text-lg font-bold text-primary">3.50</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-500" data-icon="token">token</span>
+<span class="text-sm font-medium">BetWay (Away)</span>
+</div>
+<span class="text-lg font-bold text-primary">2.45</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<div class="flex flex-col">
+<span class="label-sm text-on-surface-variant uppercase tracking-wider">Potential Profit</span>
+<span class="text-xl font-bold text-on-surface">₦5,700.00</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-transform">
+                            Invest
+                        </button>
+</div>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden group hover:bg-surface-container transition-all duration-300">
+<div class="p-6">
+<div class="flex justify-between items-start mb-6">
+<div class="flex flex-col gap-1">
+<span class="label-sm uppercase tracking-widest text-on-surface-variant font-semibold">WTA Tennis</span>
+<h3 class="headline-sm font-bold text-on-surface">Swiatek vs Sabalenka</h3>
+</div>
+<div class="bg-primary/10 text-primary px-3 py-1 rounded-md border border-primary/20">
+<span class="text-sm font-bold">5.12%</span>
+</div>
+</div>
+<div class="space-y-4 mb-8">
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-500" data-icon="sports_tennis">sports_tennis</span>
+<span class="text-sm font-medium">Melbet (Swiatek)</span>
+</div>
+<span class="text-lg font-bold text-primary">1.95</span>
+</div>
+<div class="flex items-center justify-between p-3 rounded-lg bg-surface-container-high">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-zinc-500" data-icon="sports_tennis">sports_tennis</span>
+<span class="text-sm font-medium">Bwin (Sabalenka)</span>
+</div>
+<span class="text-lg font-bold text-primary">2.18</span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-4 border-t border-outline-variant/10">
+<div class="flex flex-col">
+<span class="label-sm text-on-surface-variant uppercase tracking-wider">Potential Profit</span>
+<span class="text-xl font-bold text-on-surface">₦10,240.00</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold text-sm hover:scale-105 active:scale-95 transition-transform">
+                            Invest
+                        </button>
+</div>
+</div>
+</div>
+<!-- Card 4 (Bento/Hero Wide) -->
+<div class="lg:col-span-2 xl:col-span-3 bg-surface-container-low rounded-xl overflow-hidden p-8 flex flex-col md:flex-row gap-8 items-center border border-primary/10">
+<div class="flex-1">
+<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-400 mb-4">
+<span class="material-symbols-outlined text-xs" data-icon="stars">stars</span>
+<span class="text-xs font-bold uppercase tracking-widest">Premium Discovery</span>
+</div>
+<h3 class="text-3xl font-extrabold text-on-surface mb-2 tracking-tight">Super Bowl LVIII: High Liquidity Gap</h3>
+<p class="text-on-surface-variant leading-relaxed max-w-xl mb-6">
+                        A significant market discrepancy has been detected in the Moneyline market for the upcoming championship game. Volume is high, ensuring stability for large stakes.
+                    </p>
+<div class="flex gap-8">
+<div>
+<span class="label-sm text-on-surface-variant uppercase tracking-widest block mb-1">Arbitrage %</span>
+<span class="text-2xl font-bold text-primary">6.45%</span>
+</div>
+<div>
+<span class="label-sm text-on-surface-variant uppercase tracking-widest block mb-1">Max Bet</span>
+<span class="text-2xl font-bold text-on-surface">₦500k+</span>
+</div>
+<div>
+<span class="label-sm text-on-surface-variant uppercase tracking-widest block mb-1">Confidence</span>
+<span class="text-2xl font-bold text-secondary">98%</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-64 h-48 bg-surface-container rounded-lg overflow-hidden">
+<img alt="Financial Chart" class="w-full h-full object-cover opacity-60" data-alt="Modern fluorescent data visualization chart showing sharp upward green trends and complex nodes on a dark digital interface" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBF5ShBDIFgPPoxQeKoAu85zgX6M6XGfSsEXqzyClMNw5BzTQ5cZBrw_BH2sgoR-9NlPIQDKmEPCTFn_IkKQqDu-UrYSKUXpHT-T6rMH7glp-hjFvItMj92_eoSjz6YuWBWTuhrdgvWyB0bDLnXrIqnXvsnJlqiQABhVstT_aYZb3pNO69kDlZz2p-MLIXzFoM9icMVbgFfhxefpeFiWeCM8xuYzZLWmi9OW9EqdxawvcpWGEQo9VR_ldiwVtDwApQ9vslskIjcLvY"/>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#131313] dark:bg-[#131313]/80 backdrop-blur-[20px] z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(16,185,129,0.06)] md:hidden">
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em] mt-1">Ledger</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 rounded-2xl px-4 py-2 transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="query_stats" style="font-variation-settings: 'FILL' 1;">query_stats</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em] mt-1">Arbitrage</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em] mt-1">Analysis</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="shield">shield</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em] mt-1">Vault</span>
+</div>
+<div class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em] mt-1">Account</span>
+</div>
+</nav>
+<!-- Floating Refresh Action (Mandatory Contextual FAB) -->
+<div class="fixed right-8 bottom-28 md:bottom-12 z-50">
+<button class="w-16 h-16 rounded-full bg-primary-container text-on-primary-container shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-300 group">
+<span class="material-symbols-outlined text-3xl group-hover:rotate-180 transition-transform duration-500" data-icon="autorenew">autorenew</span>
+</button>
+</div>
+</body></html>

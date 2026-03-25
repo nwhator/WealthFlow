@@ -160,3 +160,42 @@ BEGIN
   RETURN v_transaction_id;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
+-- ==========================================
+-- 5. Arbitrage System Tables
+-- ==========================================
+
+-- Bookmakers table
+CREATE TABLE IF NOT EXISTS public.bookmakers (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  name TEXT NOT NULL UNIQUE,
+  logo_url TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Arbitrage opportunities table
+CREATE TABLE IF NOT EXISTS public.arbitrage_opportunities (
+  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id UUID NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  match TEXT NOT NULL,
+  sport TEXT,
+  market TEXT NOT NULL,
+  arbitrage_percentage NUMERIC NOT NULL,
+  profit_estimate NUMERIC NOT NULL,
+  details JSONB NOT NULL, -- To store stake distribution, odds, and bookmaker names
+  is_bookmarked BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Enable RLS
+ALTER TABLE public.bookmakers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.arbitrage_opportunities ENABLE ROW LEVEL SECURITY;
+
+-- Policies
+CREATE POLICY "Anyone can view bookmakers." ON public.bookmakers FOR SELECT USING (true);
+CREATE POLICY "Users can manage their own arbitrage opportunities." 
+  ON public.arbitrage_opportunities FOR ALL USING (auth.uid() = user_id);
+
+-- Seed some common bookmakers
+INSERT INTO public.bookmakers (name) VALUES 
+('Bet365'), ('1xBet'), ('BetWay'), ('SportyBet'), ('BetKing'), ('Melbet'), ('Bwin')
+ON CONFLICT (name) DO NOTHING;

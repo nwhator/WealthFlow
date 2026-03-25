@@ -40,11 +40,15 @@ export default function Navigation() {
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/accounts' ? "'FILL' 1" : "'FILL' 0" }}>account_balance_wallet</span>
           <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Accounts</span>
         </Link>
-        <Link href="/betting" className={`flex flex-col items-center justify-center ${pathname === '/betting' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
+        <Link href="/betting" className={`flex flex-col items-center justify-center ${pathname === '/betting' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/betting' ? "'FILL' 1" : "'FILL' 0" }}>casino</span>
           <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Betting</span>
         </Link>
-        <Link href="/savings" className={`flex flex-col items-center justify-center ${pathname === '/savings' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
+        <Link href="/arbitrage" className={`flex flex-col items-center justify-center ${pathname === '/arbitrage' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/arbitrage' ? "'FILL' 1" : "'FILL' 0" }}>query_stats</span>
+          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Arbitrage</span>
+        </Link>
+        <Link href="/savings" className={`flex flex-col items-center justify-center ${pathname === '/savings' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/savings' ? "'FILL' 1" : "'FILL' 0" }}>lock</span>
           <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Savings</span>
         </Link>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "surface-dim": "#131313",
+                        "on-tertiary-fixed": "#410004",
+                        "on-tertiary-container": "#79000e",
+                        "on-error": "#690005",
+                        "surface-tint": "#4edea3",
+                        "surface": "#131313",
+                        "secondary": "#adc6ff",
+                        "primary-container": "#10b981",
+                        "primary": "#4edea3",
+                        "inverse-primary": "#006c49",
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-secondary-container": "#e6ecff",
+                        "inverse-on-surface": "#313030",
+                        "secondary-container": "#0566d9",
+                        "on-surface-variant": "#bbcabf",
+                        "surface-container-high": "#2a2a2a",
+                        "on-background": "#e5e2e1",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-container": "#00422b",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "on-primary-fixed-variant": "#005236",
+                        "background": "#131313",
+                        "on-secondary": "#002e6a",
+                        "surface-container-highest": "#353534",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-primary-fixed": "#002113",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary-fixed": "#ffdad7",
+                        "tertiary-container": "#ff7a73",
+                        "primary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#004395",
+                        "error-container": "#93000a",
+                        "surface-container": "#201f1f",
+                        "on-primary": "#003824",
+                        "tertiary": "#ffb3ad",
+                        "on-tertiary": "#68000a",
+                        "on-tertiary-fixed-variant": "#930013",
+                        "tertiary-fixed-dim": "#ffb3ad",
+                        "surface-container-low": "#1c1b1b",
+                        "outline-variant": "#3c4a42",
+                        "secondary-fixed": "#d8e2ff",
+                        "outline": "#86948a",
+                        "error": "#ffb4ab",
+                        "surface-variant": "#353534",
+                        "on-secondary-fixed": "#001a42",
+                        "on-error-container": "#ffdad6"
+                    },
+                    fontFamily: {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-[#131313] dark:bg-[#131313]/60 backdrop-blur-md">
+<div class="flex justify-between items-center px-6 py-4 w-full max-w-screen-2xl mx-auto">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden border border-outline-variant/20">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="minimalist silhouette of a professional concierge avatar in muted charcoal and emerald tones" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA_eM0OAe6S3THul5b4R2iMhf0uwWO2d2QeS48f7n8CkhBMWfUxnD_cSv5jyNcjEouOzH_NLELHkYZtt_lTlDVIJvJhCL6eiAq__XPG8VgRTot53jIcEVuE-vZcnA7iUx2_XQWDT140i377yOkmM94-uvMceEv1dQD9XyrQfnflrtpWuewRuFfp8Hv4D6xArwIIN4ff0AYqNOKHXRoOYcwCHrEISUo1Vb3b3dtTy_izOyknUEPKjOVCTSZc6NfvObGsHscBIH9l70"/>
+</div>
+<h1 class="text-xl font-bold tracking-tighter text-emerald-500 dark:text-emerald-400 font-inter">The Sovereign Ledger</h1>
+</div>
+<div class="flex items-center gap-2">
+<button class="p-2 rounded-full hover:bg-zinc-800/50 transition-colors duration-300 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-zinc-500 dark:text-zinc-400">notifications</span>
+</button>
+</div>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6 max-w-screen-2xl mx-auto min-h-screen">
+<!-- Hero Section: Wealth Scale -->
+<section class="mb-12">
+<p class="label-sm uppercase tracking-[0.05em] text-on-surface-variant mb-2">Total Operating Capital</p>
+<div class="flex items-baseline gap-2">
+<span class="text-3xl font-light text-primary">₦</span>
+<h2 class="text-[3.5rem] font-bold tracking-tight text-on-surface leading-none">2,480,000.<span class="text-on-surface-variant text-4xl">00</span></h2>
+</div>
+<div class="mt-4 flex gap-4">
+<div class="px-3 py-1 bg-surface-container-highest rounded-md flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-[0.6875rem] font-medium uppercase tracking-[0.05em] text-primary">8 active accounts</span>
+</div>
+</div>
+</section>
+<!-- Bookmaker Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Account Card: Bet9ja -->
+<div class="bg-surface-container-low rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-high group border border-transparent hover:border-primary/10">
+<div class="flex justify-between items-start mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#1a1a1a] flex items-center justify-center border border-outline-variant/10">
+<span class="text-primary font-bold text-xl">B9</span>
+</div>
+<div>
+<h3 class="headline-sm font-semibold text-on-surface">Bet9ja</h3>
+<p class="label-sm text-on-surface-variant uppercase tracking-wider">Premium Access</p>
+</div>
+</div>
+<!-- Toggle -->
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-2">
+<label class="label-md text-on-surface-variant block">Manual Balance Adjustment</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 text-primary font-medium">₦</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-4 pl-10 pr-4 text-on-surface font-semibold focus:ring-1 focus:ring-primary/30 transition-all" type="text" value="1,240,500.00"/>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-[0.6875rem] uppercase tracking-widest text-on-surface-variant">
+<span>Last Synced: 2m ago</span>
+<span class="text-primary">Operational</span>
+</div>
+</div>
+<!-- Account Card: SportyBet -->
+<div class="bg-surface-container-low rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-high group border border-transparent hover:border-primary/10">
+<div class="flex justify-between items-start mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#1a1a1a] flex items-center justify-center border border-outline-variant/10">
+<span class="text-tertiary font-bold text-xl">SB</span>
+</div>
+<div>
+<h3 class="headline-sm font-semibold text-on-surface">SportyBet</h3>
+<p class="label-sm text-on-surface-variant uppercase tracking-wider">High Liquidity</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-2">
+<label class="label-md text-on-surface-variant block">Manual Balance Adjustment</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 text-primary font-medium">₦</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-4 pl-10 pr-4 text-on-surface font-semibold focus:ring-1 focus:ring-primary/30 transition-all" type="text" value="840,000.00"/>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-[0.6875rem] uppercase tracking-widest text-on-surface-variant">
+<span>Last Synced: 15m ago</span>
+<span class="text-primary">Operational</span>
+</div>
+</div>
+<!-- Account Card: BetKing -->
+<div class="bg-surface-container-low rounded-xl p-6 transition-all duration-300 hover:bg-surface-container-high group border border-transparent hover:border-primary/10">
+<div class="flex justify-between items-start mb-8">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-lg bg-[#1a1a1a] flex items-center justify-center border border-outline-variant/10">
+<span class="text-secondary font-bold text-xl">BK</span>
+</div>
+<div>
+<h3 class="headline-sm font-semibold text-on-surface">BetKing</h3>
+<p class="label-sm text-on-surface-variant uppercase tracking-wider">Secondary Ledger</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox"/>
+<div class="w-11 h-6 bg-surface-container-highest rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+<div class="space-y-2 opacity-50">
+<label class="label-md text-on-surface-variant block">Manual Balance Adjustment</label>
+<div class="relative flex items-center">
+<span class="absolute left-4 text-primary font-medium">₦</span>
+<input class="w-full bg-surface-container-high border-none rounded-lg py-4 pl-10 pr-4 text-on-surface font-semibold" disabled="" type="text" value="0.00"/>
+</div>
+</div>
+<div class="mt-6 flex justify-between items-center text-[0.6875rem] uppercase tracking-widest text-on-surface-variant">
+<span>Last Synced: 2d ago</span>
+<span class="text-zinc-600">Inactive</span>
+</div>
+</div>
+<!-- Add New Account - Ghost State Card -->
+<div class="border-2 border-dashed border-outline-variant/20 rounded-xl p-6 flex flex-col items-center justify-center min-h-[280px] hover:border-primary/40 transition-all cursor-pointer group">
+<div class="w-16 h-16 rounded-full bg-surface-container-low flex items-center justify-center mb-4 group-hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-3xl text-primary group-hover:text-on-primary-container">add</span>
+</div>
+<p class="text-on-surface font-semibold">Connect New Platform</p>
+<p class="text-on-surface-variant text-sm mt-1">Expansion increases arbitrage yield</p>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<div class="fixed bottom-32 right-8 z-[60]">
+<button class="flex items-center gap-3 px-6 py-4 bg-gradient-to-br from-primary to-primary-container text-on-primary-container rounded-full shadow-[0_8px_32px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all duration-300 group">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add_circle</span>
+<span class="font-bold tracking-tight">Add Bookmaker</span>
+</button>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#131313] dark:bg-[#131313]/80 backdrop-blur-[20px] z-50 rounded-t-3xl shadow-[0_-4px_24px_rgba(16,185,129,0.06)]">
+<a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">account_balance_wallet</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em]">Ledger</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">query_stats</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em]">Arbitrage</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">analytics</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em]">Analysis</span>
+</a>
+<a class="flex flex-col items-center justify-center text-zinc-500 dark:text-zinc-500 px-4 py-2 hover:text-emerald-400 transition-colors active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1">shield</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em]">Vault</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 rounded-2xl px-4 py-2 transition-all active:scale-90 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-inter text-[0.6875rem] font-medium uppercase tracking-[0.05em]">Account</span>
+</a>
+</nav>
+</body></html>

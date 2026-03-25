@@ -38,9 +38,11 @@ export async function GET(request: Request) {
 
     const suggestions = []
     
-    // Evaluate upcoming matches across globally scanned bookmakers
-    for (const game of games) {
-      if (!game.bookmakers || game.bookmakers.length === 0) continue;
+    // Evaluate upcoming matches across globally scanned bookmakerscv
+      const commenceDate = new Date(game.commence_time);
+      const now = new Date();
+      const timeDiffHours = (commenceDate.getTime() - now.getTime()) / (1000 * 60 * 60);
+      if (timeDiffHours < 0 || timeDiffHours > 48) continue;
       
       let lowestOverallOdds = 999;
       let favoredTeam = "";

@@ -44,33 +44,47 @@ export async function runFullDataRefresh(force: boolean = false) {
   // NO DATE FILTERING — process all games
   const relevantGames = games
 
-  // 1. Predictions Cache
+  // 1. Predictions Cache (Batching to prevent payload size errors)
   const predictions = generatePredictions(relevantGames)
   console.log(`[Cron-Logic] Generated ${predictions.length} predictions`)
 
   if (predictions.length > 0) {
-    await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-    const { error: insErr } = await supabase.from('predictions_cache').insert(
-      predictions.map(p => ({
-        match: p.match,
-        sport: p.sport,
-        market: p.market,
-        prediction: p.prediction,
-        line: p.line ?? null,
-        odds: p.odds,
-        confidence: p.confidence,
-        reason: p.reason,
-        edge: p.edge,
-        market_average: p.marketAverage,
-        market_margin: p.marketMargin,
-        volatility: p.volatility,
-        liquidity: p.liquidity,
-        unit_return: p.unitReturn,
-        commence_time: p.commence_time,
-        bookmaker: p.bookmaker,
-      }))
-    )
-    if (insErr) console.error('[Cron-Logic] Predictions insert error:', insErr)
+    const { error: delErr } = await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
+    if (delErr) {
+       console.error('[Cron-Logic] Delete error:', delErr)
+       throw new Error(`Failed to clear cache: ${delErr.message}`)
+    }
+
+    const payload = predictions.map(p => ({
+      match: p.match,
+      sport: p.sport,
+      market: p.market,
+      prediction: p.prediction,
+      line: p.line ?? null,
+      odds: p.odds,
+      confidence: p.confidence,
+      reason: p.reason,
+      edge: p.edge,
+      market_average: p.marketAverage,
+      market_margin: p.marketMargin,
+      volatility: p.volatility,
+      liquidity: p.liquidity,
+      unit_return: p.unitReturn,
+      commence_time: p.commence_time,
+      bookmaker: p.bookmaker,
+    }))
+
+    // Batch insert 100 rows at a time
+    const CHUNK_SIZE = 100
+    for (let i = 0; i < payload.length; i += CHUNK_SIZE) {
+      const chunk = payload.slice(i, i + CHUNK_SIZE)
+      const { error: insErr } = await supabase.from('predictions_cache').insert(chunk)
+      if (insErr) {
+         console.error(`[Cron-Logic] Batch insert failed at index ${i}:`, insErr)
+         throw new Error(`DB Insert Failed: ${insErr.message}`)
+      }
+    }
+    console.log(`[Cron-Logic] Successfully cached ${predictions.length} predictions in chunks.`)
   }
 
   // 2. Arbitrage Cache
@@ -100,7 +114,8 @@ export async function runFullDataRefresh(force: boolean = false) {
       )
       if (bestOutcomes.length >= 2) {
         const op = calculateArbitrage(game.match, game.sport, mKey, bestOutcomes, 10000)
-        if (op && op.arbitragePercentage > 0) {
+        // Relaxed threshold: include everything above -0.5% (to show 'near' value for more opportunities)
+        if (op && op.arbitragePercentage > -0.5) {
           arbitrageOpps.push({
             match: op.match,
             sport: op.sport,
@@ -117,12 +132,15 @@ export async function runFullDataRefresh(force: boolean = false) {
     }
   }
 
-  console.log(`[Cron-Logic] Found ${arbitrageOpps.length} arbitrage opportunities`)
+  console.log(`[Cron-Logic] Found ${arbitrageOpps.length} opportunities`)
 
   if (arbitrageOpps.length > 0) {
     await supabase.from('arbitrage_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
     const { error: arbErr } = await supabase.from('arbitrage_cache').insert(arbitrageOpps)
-    if (arbErr) console.error('[Cron-Logic] Arbitrage insert error:', arbErr)
+    if (arbErr) {
+       console.error('[Cron-Logic] Arbitrage insert error:', arbErr)
+       throw new Error(`Arb Insert Failed: ${arbErr.message}`)
+    }
   }
 
   const now = new Date()

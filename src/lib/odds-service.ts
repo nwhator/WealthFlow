@@ -57,11 +57,31 @@ export async function getNormalizedOdds(): Promise<NormalizedGame[]> {
   ];
 
   try {
-    const responses = await Promise.all(endpoints.map(ep => fetch(ep, { next: { revalidate: 300 } })));
-    const allData = await Promise.all(responses.map(res => res.ok ? res.json() : []));
+    const allGames: OddsAPIGame[] = [];
     
-    const rawGames = allData.flat();
-    const uniqueRawGames = Array.from(new Map(rawGames.map((g: any) => [g.id, g])).values());
+    for (const url of endpoints) {
+      try {
+        const res = await fetch(url, { next: { revalidate: 0 } });
+        console.log(`[Odds-Service] GET ${url.split('?')[0]} - Status: ${res.status}`);
+        
+        if (!res.ok) {
+           const errText = await res.text();
+           console.error(`[Odds-Service] Error response: ${errText.substring(0, 100)}...`);
+           continue;
+        }
+        
+        const data = await res.json();
+        console.log(`[Odds-Service] Received ${Array.isArray(data) ? data.length : 0} items`);
+        if (Array.isArray(data)) {
+          allGames.push(...data);
+        }
+      } catch (e) {
+        console.error(`[Odds-Service] Fetch failed for ${url}:`, e);
+      }
+    }
+
+    const uniqueRawGames = Array.from(new Map(allGames.map((g: any) => [g.id, g])).values());
+    console.log(`[Odds-Service] Total unique games after deduplication: ${uniqueRawGames.length}`);
 
     const normalizedData: NormalizedGame[] = (uniqueRawGames as OddsAPIGame[])
       .filter(g => g && g.id && Array.isArray(g.bookmakers))

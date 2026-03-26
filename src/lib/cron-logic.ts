@@ -6,34 +6,27 @@ import { Outcome } from '@/lib/arbitrage-utils'
 
 export async function runFullDataRefresh() {
   const supabase = await createClient()
-  console.log('[Cron-Logic] Starting robust refresh...')
+  console.log('[Cron-Logic] Starting TOTAL DE-RESTRICTED refresh...')
   
   const games = await getNormalizedOdds()
   if (!games || games.length === 0) {
-    console.warn('[Cron-Logic] API returned 0 games. Aborting to preserve cache.')
+    console.warn('[Cron-Logic] API returned 0 games. Nothing to process.')
     return { error: 'Empty API response', timestamp: new Date().toISOString() }
   }
-  console.log(`[Cron-Logic] Fetched ${games.length} games`)
+  console.log(`[Cron-Logic] Fetched ${games.length} total games`);
 
-  const now = new Date()
-  const startOfToday = new Date(now)
-  startOfToday.setHours(0, 0, 0, 0)
-  const thirtyDays = new Date(now)
-  thirtyDays.setDate(now.getDate() + 30)
-
-  const relevantGames = games.filter(g => {
-    const d = new Date(g.commence_time)
-    return d >= startOfToday && d <= thirtyDays
-  })
-  console.log(`[Cron-Logic] ${relevantGames.length} games within 30-day window`)
+  // NO MORE DATE FILTERING - USE ALL GAMES
+  const relevantGames = games;
+  console.log(`[Cron-Logic] Processing ALL ${relevantGames.length} games (No date limit applied)`)
 
   // 1. Predictions Cache
   const predictions = generatePredictions(relevantGames)
-  console.log(`[Cron-Logic] Generated ${predictions.length} predictions`)
+  console.log(`[Cron-Logic] Generated ${predictions.length} total predictions`)
 
   if (predictions.length > 0) {
+    // We only clear if we have new data to replace it with
     await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-    await supabase.from('predictions_cache').insert(
+    const { error: insErr } = await supabase.from('predictions_cache').insert(
       predictions.map(p => ({
         match: p.match,
         sport: p.sport,
@@ -52,8 +45,7 @@ export async function runFullDataRefresh() {
         bookmaker: p.bookmaker,
       }))
     )
-  } else {
-    console.warn('[Cron-Logic] 0 predictions generated. Keeping existing cache.')
+    if (insErr) console.error('[Cron-Logic] Predictions insert error:', insErr)
   }
 
   // 2. Arbitrage Cache
@@ -102,9 +94,8 @@ export async function runFullDataRefresh() {
 
   if (arbitrageOpps.length > 0) {
     await supabase.from('arbitrage_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
-    await supabase.from('arbitrage_cache').insert(arbitrageOpps)
-  } else {
-    console.warn('[Cron-Logic] 0 arbitrage opps found. Keeping existing cache.')
+    const { error: arbErr } = await supabase.from('arbitrage_cache').insert(arbitrageOpps)
+    if (arbErr) console.error('[Cron-Logic] Arbitrage insert error:', arbErr)
   }
 
   return {

@@ -55,18 +55,8 @@ export default async function PredictionsPage() {
     .from('predictions_cache')
     .select('*')
 
-  const now = new Date()
-  const startOfToday = new Date(now)
-  startOfToday.setHours(0, 0, 0, 0)
-  const thirtyDaysFromNow = new Date(now)
-  thirtyDaysFromNow.setDate(now.getDate() + 30)
-
-  // SORT BY: Date (Asc), then Odds (Desc)
+  // SORT BY: Date (Asc), then Odds (Desc) - NO DATE FILTERING
   const allPredictions: Prediction[] = (predictions || [])
-    .filter(p => {
-        const d = new Date(p.commence_time)
-        return d >= startOfToday && d <= thirtyDaysFromNow
-    })
     .sort((a, b) => {
         const dateA = new Date(a.commence_time).getTime()
         const dateB = new Date(b.commence_time).getTime()

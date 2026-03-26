@@ -11,11 +11,7 @@ export default async function PricingPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    redirect('/login')
-  }
-
-  const sub = await getSubscription(user.id)
+  const sub = await getSubscription(user?.id)
   const isPremium = sub.plan === 'premium'
 
   return (
@@ -64,15 +60,19 @@ export default async function PricingPage() {
                 </ul>
               </div>
 
-              {!isPremium ? (
-                <CheckoutButton 
-                  priceId={MONTHLY_PRICE_ID} 
-                  userId={user.id} 
-                  userEmail={user.email!}
-                  className="mt-auto w-full py-5 bg-on-surface text-surface rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-on-surface/90 transition-all active:scale-95 text-center shadow-xl shadow-surface-container-highest/20"
-                />
+              {user ? (
+                !isPremium ? (
+                  <CheckoutButton 
+                    priceId={MONTHLY_PRICE_ID} 
+                    userId={user.id} 
+                    userEmail={user.email!}
+                    className="mt-auto w-full py-5 bg-on-surface text-surface rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-on-surface/90 transition-all active:scale-95 text-center shadow-xl shadow-surface-container-highest/20"
+                  />
+                ) : (
+                  <button disabled className="mt-auto w-full py-5 bg-surface-container-highest text-on-surface-variant rounded-2xl font-black text-sm uppercase cursor-not-allowed">Active Plan</button>
+                )
               ) : (
-                <button disabled className="mt-auto w-full py-5 bg-surface-container-highest text-on-surface-variant rounded-2xl font-black text-sm uppercase cursor-not-allowed">Active Plan</button>
+                <Link href="/login" className="mt-auto w-full py-5 bg-on-surface text-surface rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-on-surface/90 transition-all text-center">Sign in to Subscribe</Link>
               )}
             </div>
           </div>
@@ -100,15 +100,19 @@ export default async function PricingPage() {
                 </ul>
               </div>
 
-              {!isPremium ? (
-                <CheckoutButton 
-                  priceId={YEARLY_PRICE_ID} 
-                  userId={user.id} 
-                  userEmail={user.email!}
-                  className="mt-auto w-full py-5 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-primary/90 transition-all active:scale-95 text-center shadow-xl shadow-primary/20"
-                />
+              {user ? (
+                !isPremium ? (
+                  <CheckoutButton 
+                    priceId={YEARLY_PRICE_ID} 
+                    userId={user.id} 
+                    userEmail={user.email!}
+                    className="mt-auto w-full py-5 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-primary/90 transition-all active:scale-95 text-center shadow-xl shadow-primary/20"
+                  />
+                ) : (
+                  <button disabled className="mt-auto w-full py-5 bg-surface-container-highest text-on-surface-variant rounded-2xl font-black text-sm uppercase cursor-not-allowed">Active Plan</button>
+                )
               ) : (
-                <button disabled className="mt-auto w-full py-5 bg-surface-container-highest text-on-surface-variant rounded-2xl font-black text-sm uppercase cursor-not-allowed">Active Plan</button>
+                <Link href="/login" className="mt-auto w-full py-5 bg-primary text-on-primary rounded-2xl font-black text-sm uppercase tracking-[0.1em] hover:bg-primary/90 transition-all text-center">Sign in to Subscribe</Link>
               )}
             </div>
           </div>

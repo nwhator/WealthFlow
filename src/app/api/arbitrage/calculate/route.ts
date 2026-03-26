@@ -6,13 +6,9 @@ export async function GET(request: Request) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-  }
-
-  const plan = await getUserPlan(user.id)
+  const plan = await getUserPlan(user?.id)
   if (plan !== 'premium') {
-    return NextResponse.json({ isPremiumRequired: true }, { status: 403 })
+    return NextResponse.json({ isPremiumRequired: true }, { status: 200 })
   }
 
   const { searchParams } = new URL(request.url)

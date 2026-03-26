@@ -13,7 +13,10 @@ export interface Subscription {
 /**
  * Fetch the current user's subscription, defaulting to free if none exists.
  */
-export async function getSubscription(userId: string): Promise<Subscription> {
+export async function getSubscription(userId?: string): Promise<Subscription> {
+  if (!userId) {
+    return { plan: 'free', status: 'none', current_period_end: null, paddle_customer_id: null }
+  }
   const supabase = await createClient()
   const { data } = await supabase
     .from('subscriptions')

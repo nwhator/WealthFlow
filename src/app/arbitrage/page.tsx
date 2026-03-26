@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { bookmarkOpportunity, getSavedOpportunities } from './actions'
 import PremiumPaywall from '@/components/PremiumPaywall'
+import Link from 'next/link'
 
 type Outcome = {
   name: string
@@ -140,6 +141,12 @@ export default function ArbitrageDashboard() {
               <p className="text-on-surface-variant text-lg max-w-lg leading-relaxed">
                 {activeTab === 'Live' ? 'Identify high-yield discrepancies across global sportsbooks.' : 'Review your previously identified arbitrage opportunities.'}
               </p>
+              <div className="mt-4">
+                <Link href="/arbitrage/calculator" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-[0.1em] text-[10px] hover:underline">
+                    <span className="material-symbols-outlined text-sm">calculate</span>
+                    Open Manual Calculator
+                </Link>
+              </div>
             </div>
             <div className="flex flex-wrap gap-4 mb-2">
               <div className="bg-surface-container-low p-6 rounded-xl min-w-[200px] border border-outline-variant/10 shadow-sm">

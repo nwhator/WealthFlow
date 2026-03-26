@@ -22,6 +22,8 @@ export async function runFullDataRefresh() {
 
   // 1. Predictions Cache
   const predictions = generatePredictions(relevantGames)
+  console.log(`[Cron-Logic] Generated ${predictions.length} predictions`)
+
   await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 
   if (predictions.length > 0) {
@@ -46,43 +48,62 @@ export async function runFullDataRefresh() {
     )
   }
 
-  // 2. Arbitrage Cache
+  // 2. Arbitrage Cache - Scan ALL markets
   const arbitrageOpps = []
+  const marketKeys = ['h2h', 'totals', 'spreads']
+
   for (const game of relevantGames) {
     if (!game.bookmakers || game.bookmakers.length === 0) continue
 
-    const outcomesByName: Record<string, Outcome[]> = {}
-    for (const bookie of game.bookmakers) {
-      for (const market of bookie.markets) {
-        if (market.key !== 'h2h') continue
-        for (const outcome of market.outcomes) {
-          if (!outcomesByName[outcome.name]) outcomesByName[outcome.name] = []
-          outcomesByName[outcome.name].push(outcome)
+    for (const mKey of marketKeys) {
+      const outcomesByName: Record<string, Outcome[]> = {}
+      
+      for (const bookie of game.bookmakers) {
+        const mkt = bookie.markets.find(m => m.key === mKey)
+        if (!mkt) continue
+
+        for (const outcome of mkt.outcomes) {
+          // Unique key for totals: 'Over 2.5', for spreads: 'Home -1.5'
+          const label = mKey === 'h2h' ? outcome.name : `${outcome.name} ${outcome.point !== undefined ? (outcome.point > 0 ? '+' : '') + outcome.point : ''}`.trim()
+          
+          if (!outcomesByName[label]) outcomesByName[label] = []
+          outcomesByName[label].push({
+            name: label,
+            odds: outcome.odds,
+            bookmaker: outcome.bookmaker
+          })
+        }
+      }
+
+      const labels = Object.keys(outcomesByName)
+      if (labels.length < 2) continue
+
+      const bestOutcomes: Outcome[] = labels.map(label =>
+        outcomesByName[label].reduce((prev, curr) => curr.odds > prev.odds ? curr : prev)
+      )
+
+      // Only attempt if we have the right number of outcomes
+      // h2h on some sports might have 3, totals/spreads always 2
+      if (bestOutcomes.length >= 2) {
+        const op = calculateArbitrage(game.match, game.sport, mKey, bestOutcomes, 10000)
+        if (op && op.arbitragePercentage > 0) {
+          arbitrageOpps.push({
+            match: op.match,
+            sport: op.sport,
+            market: op.market,
+            commence_time: game.commence_time,
+            arbitrage_percentage: op.arbitragePercentage,
+            guaranteed_profit: op.guaranteedProfit,
+            implied_prob: op.impliedProb,
+            stake_distribution: op.stakeDistribution || [],
+            outcomes: op.outcomes,
+          })
         }
       }
     }
-
-    const bestOutcomes: Outcome[] = Object.keys(outcomesByName).map(name =>
-      outcomesByName[name].reduce((prev, curr) => curr.odds > prev.odds ? curr : prev)
-    )
-
-    if (bestOutcomes.length >= 2) {
-      const op = calculateArbitrage(game.match, game.sport, 'h2h', bestOutcomes, 10000)
-      if (op && op.arbitragePercentage > 0) {
-        arbitrageOpps.push({
-          match: op.match,
-          sport: op.sport,
-          market: op.market,
-          commence_time: game.commence_time,
-          arbitrage_percentage: op.arbitragePercentage,
-          guaranteed_profit: op.guaranteedProfit,
-          implied_prob: op.impliedProb,
-          stake_distribution: op.stakeDistribution || [],
-          outcomes: op.outcomes,
-        })
-      }
-    }
   }
+
+  console.log(`[Cron-Logic] Found ${arbitrageOpps.length} arbitrage opportunities`)
 
   await supabase.from('arbitrage_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 

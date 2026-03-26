@@ -61,7 +61,9 @@ export async function getNormalizedOdds(): Promise<NormalizedGame[]> {
     const allData = await Promise.all(responses.map(res => res.ok ? res.json() : []));
     
     const rawGames = allData.flat();
-    const normalizedData: NormalizedGame[] = (rawGames as OddsAPIGame[])
+    const uniqueRawGames = Array.from(new Map(rawGames.map((g: any) => [g.id, g])).values());
+
+    const normalizedData: NormalizedGame[] = (uniqueRawGames as OddsAPIGame[])
       .filter(g => g && g.id && Array.isArray(g.bookmakers))
       .map((game: OddsAPIGame) => ({
         id: game.id,

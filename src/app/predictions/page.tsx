@@ -57,12 +57,14 @@ export default async function PredictionsPage() {
     .order('confidence', { ascending: false })
 
   const now = new Date()
-  const thirtyDaysFromNow = new Date()
+  const startOfToday = new Date(now)
+  startOfToday.setHours(0, 0, 0, 0)
+  const thirtyDaysFromNow = new Date(now)
   thirtyDaysFromNow.setDate(now.getDate() + 30)
 
   const allPredictions: Prediction[] = (predictions || []).filter(p => {
     const d = new Date(p.commence_time)
-    return d >= now && d <= thirtyDaysFromNow
+    return d >= startOfToday && d <= thirtyDaysFromNow
   })
   const visiblePredictions = isPremium ? allPredictions : allPredictions.slice(0, FREE_LIMIT)
   const lockedCount = allPredictions.length - FREE_LIMIT

@@ -53,6 +53,12 @@ const profitTier = (pct: number) => {
   return { ring: 'ring-outline-variant/20', glow: 'shadow-transparent', badge: 'bg-surface-container-highest text-on-surface-variant', label: 'Marginal', dot: 'bg-zinc-500' }
 }
 
+const extractLine = (name: string, market: string) => {
+  if (market === 'h2h' || !name) return ''
+  const match = name.match(/([+-]?\d+\.?\d*)$/)
+  return match ? match[1] : ''
+}
+
 const SPORTS = ['All', 'Football', 'Basketball', 'Tennis', 'MMA', 'Hockey']
 
 export default function ArbitrageDashboard() {
@@ -124,7 +130,7 @@ export default function ArbitrageDashboard() {
       const dateA = new Date(a.commence_time).getTime()
       const dateB = new Date(b.commence_time).getTime()
       if (dateA !== dateB) return dateA - dateB
-      return (b.arbitrage_percentage || 0) - (a.arbitrage_percentage || 0)
+      return (b.arbitragePercentage || 0) - (a.arbitragePercentage || 0)
     })
 
   const totalProfit = (filtered as ArbitrageOp[]).reduce((s, op) => s + (op.guaranteedProfit || 0), 0)
@@ -274,7 +280,7 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp; onBookmark
                 {tier.label}
               </span>
               <span className="text-[9px] px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface-variant font-black uppercase tracking-widest border border-outline-variant/10">
-                {op.market === 'h2h' ? 'Match Result' : op.market === 'totals' ? 'Over/Under' : 'Handicap'}
+                {op.market === 'h2h' ? 'Match Result' : op.market === 'totals' ? `O/U ${extractLine(op.stakeDistribution[0]?.name, op.market)}` : `Spread ${extractLine(op.stakeDistribution[0]?.name, op.market)}`}
               </span>
             </div>
             <div className="flex items-center gap-1.5 mb-1">
@@ -341,7 +347,12 @@ function SavedArbitrageCard({ sop }: { sop: SavedOp }) {
       <div className="p-6">
         <div className="flex justify-between items-start mb-5">
           <div>
-            <span className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black block mb-1">{sop.sport}</span>
+            <div className="flex items-center gap-2 mb-1 flex-wrap">
+              <span className="text-[9px] px-2 py-0.5 rounded-md bg-surface-container-highest text-on-surface-variant font-black uppercase tracking-widest border border-outline-variant/10">
+                 {sop.market === 'h2h' ? 'Match Result' : sop.market === 'totals' ? `O/U ${extractLine(sop.details.stakeDistribution[0]?.name, sop.market)}` : `Spread ${extractLine(sop.details.stakeDistribution[0]?.name, sop.market)}`}
+              </span>
+              <span className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">{sop.sport}</span>
+            </div>
             <h3 className="font-bold text-on-surface text-sm leading-snug">{sop.match}</h3>
             <span className="text-[9px] text-zinc-500 font-mono">{formatDate(sop.commence_time)}</span>
           </div>

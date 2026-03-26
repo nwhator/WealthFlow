@@ -6,9 +6,9 @@ import { Outcome } from '@/lib/arbitrage-utils'
 
 const REFRESH_INTERVAL_HOURS = 48
 
-export async function runFullDataRefresh() {
+export async function runFullDataRefresh(force: boolean = false) {
   const supabase = await createClient()
-  console.log('[Cron-Logic] Starting refresh check...')
+  console.log('[Cron-Logic] Starting refresh check...', force ? '(FORCED)' : '')
 
   // ── 48-hour guard ─────────────────────────────────────────────
   const { data: latestRow } = await supabase
@@ -18,7 +18,7 @@ export async function runFullDataRefresh() {
     .limit(1)
     .maybeSingle()
 
-  if (latestRow?.fetched_at) {
+  if (!force && latestRow?.fetched_at) {
     const lastFetch = new Date(latestRow.fetched_at)
     const hoursSince = (Date.now() - lastFetch.getTime()) / (1000 * 60 * 60)
     if (hoursSince < REFRESH_INTERVAL_HOURS) {

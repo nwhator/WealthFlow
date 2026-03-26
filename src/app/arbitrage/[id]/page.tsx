@@ -59,6 +59,12 @@ const profitTier = (pct: number) => {
   return { ring: 'ring-outline-variant/20', glow: 'shadow-transparent', badge: 'bg-surface-container-highest text-on-surface-variant', label: 'Marginal', hover: 'hover:shadow-black/10' }
 }
 
+const extractLine = (name: string, market: string) => {
+  if (market === 'h2h' || !name) return ''
+  const match = name.match(/([+-]?\d+\.?\d*)$/)
+  return match ? match[1] : ''
+}
+
 export default async function ArbitrageDetailPage({
   params
 }: {
@@ -119,6 +125,7 @@ export default async function ArbitrageDetailPage({
   if (!opData) notFound()
 
   const tier = profitTier(opData.arbitragePercentage)
+  const lineStr = extractLine(opData.stakeDistribution[0]?.name, opData.market)
 
   return (
     <main className="pt-24 pb-32 px-4 sm:px-6 max-w-screen-lg mx-auto min-h-screen">
@@ -142,7 +149,7 @@ export default async function ArbitrageDetailPage({
                 {tier.label} Opp
               </span>
               <span className="text-[9px] px-3 py-1 rounded-full bg-surface-container-highest border border-outline-variant/10 text-on-surface-variant font-black uppercase tracking-widest">
-                {opData.market === 'h2h' ? 'Match Result' : opData.market === 'totals' ? 'Over/Under' : 'Handicap'}
+                {opData.market === 'h2h' ? 'Match Result' : opData.market === 'totals' ? `O/U ${lineStr}` : `Spread ${lineStr}`}
               </span>
               <span className="text-[9px] px-3 py-1 rounded-full bg-surface-container-highest border border-outline-variant/10 text-on-surface-variant font-black uppercase tracking-widest border-emerald-500/20 text-emerald-500 bg-emerald-500/5">
                 {isSaved ? 'Bookmarked' : 'Live Engine Scanned'}

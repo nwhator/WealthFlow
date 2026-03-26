@@ -17,10 +17,10 @@ export default function Navigation() {
           <div className="w-10 h-10 rounded-full overflow-hidden bg-surface-container-highest flex items-center justify-center relative shadow-sm border border-outline-variant/20">
             <Image src="/logo.png" alt="WealthFlow Logo" fill className="object-cover" />
           </div>
-
           <h1 className="text-primary font-black tracking-tighter font-['Inter'] text-2xl">WealthFlow</h1>
         </div>
         <div className="flex items-center gap-2">
+          <Link href="/pricing" className="text-[10px] uppercase tracking-widest font-black text-primary border border-primary/30 bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-full transition-all">Pro</Link>
           <button onClick={() => document.documentElement.classList.toggle('dark')} className="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-highest">
             <span className="material-symbols-outlined">contrast</span>
           </button>
@@ -30,27 +30,23 @@ export default function Navigation() {
         </div>
       </header>
 
-      {/* Shared Bottom Navigation Bar */}
+      {/* Bottom Navigation Bar */}
       <nav className="fixed bottom-0 w-full z-50 rounded-t-3xl bg-surface-container/90 backdrop-blur-md tonal-shift shadow-[0_-4px_24px_rgba(16,185,129,0.06)] border-t border-outline-variant/30 flex justify-around items-center px-4 pt-3 pb-8 transition-colors duration-300">
         <Link href="/dashboard" className={`flex flex-col items-center justify-center ${pathname === '/dashboard' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/dashboard' ? "'FILL' 1" : "'FILL' 0" }}>grid_view</span>
           <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Home</span>
         </Link>
-        <Link href="/accounts" className={`flex flex-col items-center justify-center ${pathname === '/accounts' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/accounts' ? "'FILL' 1" : "'FILL' 0" }}>account_balance_wallet</span>
-          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Accounts</span>
-        </Link>
-        <Link href="/betting" className={`flex flex-col items-center justify-center ${pathname === '/betting' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/betting' ? "'FILL' 1" : "'FILL' 0" }}>casino</span>
-          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Betting</span>
+        <Link href="/predictions" className={`flex flex-col items-center justify-center ${pathname === '/predictions' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/predictions' ? "'FILL' 1" : "'FILL' 0" }}>tips_and_updates</span>
+          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Picks</span>
         </Link>
         <Link href="/arbitrage" className={`flex flex-col items-center justify-center ${pathname === '/arbitrage' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/arbitrage' ? "'FILL' 1" : "'FILL' 0" }}>query_stats</span>
-          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Arbitrage</span>
+          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Arb</span>
         </Link>
-        <Link href="/savings" className={`flex flex-col items-center justify-center ${pathname === '/savings' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-2 py-1 transition-all duration-300`}>
-          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/savings' ? "'FILL' 1" : "'FILL' 0" }}>lock</span>
-          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Savings</span>
+        <Link href="/accounts" className={`flex flex-col items-center justify-center ${pathname === '/accounts' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/accounts' ? "'FILL' 1" : "'FILL' 0" }}>account_balance_wallet</span>
+          <span className="text-[10px] uppercase tracking-[0.05em] font-semibold mt-1">Wallet</span>
         </Link>
         <Link href="/transactions" className={`flex flex-col items-center justify-center ${pathname === '/transactions' ? 'text-emerald-500 bg-emerald-500/10' : 'text-zinc-500 hover:text-emerald-400'} rounded-xl px-3 py-1 transition-all duration-300`}>
           <span className="material-symbols-outlined" style={{ fontVariationSettings: pathname === '/transactions' ? "'FILL' 1" : "'FILL' 0" }}>receipt_long</span>

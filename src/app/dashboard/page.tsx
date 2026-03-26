@@ -1,12 +1,16 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { getUserPlan } from '@/lib/subscription'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
+
+  const plan = await getUserPlan(user.id)
+  const isPremium = plan === 'premium'
 
   // Fetch accounts
   const { data: accounts } = await supabase
@@ -148,10 +152,69 @@ export default async function DashboardPage() {
         </div>
       </section>
       
+      {/* Top Pick Today — Premium teaser */}
+      <TopPickSection supabase={supabase} isPremium={isPremium} />
+
       {/* Contextual FAB */}
       <Link href="/transactions" className="fixed bottom-28 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center active:scale-90 transition-all z-40">
         <span className="material-symbols-outlined text-[32px] font-bold">add</span>
       </Link>
     </main>
+  )
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function TopPickSection({ supabase, isPremium }: { supabase: any; isPremium: boolean }) {
+  if (!isPremium) {
+    return (
+      <section className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Top Pick Today</h3>
+          <Link href="/predictions" className="text-primary text-[0.75rem] font-medium">View All Picks</Link>
+        </div>
+        <div className="relative rounded-xl bg-surface-container-high border border-outline-variant/10 p-5 overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 pointer-events-none" />
+          <div className="blur-sm pointer-events-none select-none" aria-hidden>
+            <p className="text-on-surface font-bold">Arsenal vs Man City</p>
+            <p className="text-on-surface-variant text-sm mt-1">Confidence: 74% · Odds: 2.10</p>
+          </div>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <Link href="/pricing" className="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
+              <span className="material-symbols-outlined text-sm">lock</span>
+              Unlock with Pro
+            </Link>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  const { data: pick } = await supabase
+    .from('predictions_cache')
+    .select('match, prediction, confidence, odds, sport')
+    .order('confidence', { ascending: false })
+    .limit(1)
+    .single()
+
+  if (!pick) return null
+
+  const color = pick.confidence >= 70 ? 'text-primary' : pick.confidence >= 50 ? 'text-yellow-400' : 'text-tertiary'
+
+  return (
+    <section className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Top Pick Today</h3>
+        <Link href="/predictions" className="text-primary text-[0.75rem] font-medium">View All Picks</Link>
+      </div>
+      <div className="rounded-xl bg-surface-container-high border border-outline-variant/10 p-5 space-y-2">
+        <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">{pick.sport}</p>
+        <p className="text-on-surface font-bold">{pick.match}</p>
+        <div className="flex items-center justify-between mt-2">
+          <span className="text-sm font-bold text-on-surface">Prediction: <span className={color}>{pick.prediction}</span></span>
+          <span className={`text-xs font-black uppercase tracking-widest ${color}`}>{pick.confidence}% confidence</span>
+        </div>
+        <p className="text-xs text-on-surface-variant">Best odds: <span className="font-bold text-primary">{Number(pick.odds).toFixed(2)}</span></p>
+      </div>
+    </section>
   )
 }

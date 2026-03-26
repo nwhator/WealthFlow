@@ -1,16 +1,19 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
+import { headers } from 'next/headers'
 
 export async function refreshMarketData() {
   const cronSecret = process.env.CRON_SECRET
 
   if (!cronSecret) {
-    throw new Error('CRON_SECRET is not configured on the server.')
+    return { success: false, error: 'CRON_SECRET is not configured on the server.' }
   }
 
   // Determine origin (handle development vs production)
-  const host = process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+  const hostHeader = headers().get('host') || 'localhost:3000'
+  const protocol = hostHeader.includes('localhost') ? 'http' : 'https'
+  const host = `${protocol}://${hostHeader}`
 
   try {
     const res = await fetch(`${host}/api/cron/update-data`, {

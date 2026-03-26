@@ -2,14 +2,15 @@ import { NextResponse } from 'next/server'
 import { runFullDataRefresh } from '@/lib/cron-logic'
 
 export async function GET(request: Request) {
-  // Protect with CRON_SECRET for the automated cron
+  const { searchParams } = new URL(request.url)
   const authHeader = request.headers.get('authorization')
   const cronSecret = process.env.CRON_SECRET
-  if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+  const querySecret = searchParams.get('secret')
+
+  if (cronSecret && authHeader !== `Bearer ${cronSecret}` && querySecret !== cronSecret) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { searchParams } = new URL(request.url)
   const force = searchParams.get('force') === 'true'
 
   try {

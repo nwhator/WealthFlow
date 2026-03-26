@@ -29,7 +29,7 @@ export default async function DashboardPage() {
     .select('*, from_account:accounts!from_account_id(name), to_account:accounts!to_account_id(name)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
-    .limit(5)
+    .limit(4)
 
   const recentTransactions = transactions || []
 
@@ -43,123 +43,166 @@ export default async function DashboardPage() {
   const liquidityAccount = accountsList.find(a => a.name.toLowerCase() === 'liquidity')
 
   return (
-    <main className="pt-24 pb-32 px-6 max-w-2xl mx-auto space-y-10">
-      {/* Hero Section: Net Worth */}
-      <section className="space-y-2">
-        <p className="text-[0.6875rem] uppercase tracking-[0.1em] font-semibold text-on-surface-variant">TOTAL NET WORTH</p>
-        <div className="flex flex-col gap-1">
-          <h2 className="text-[3.5rem] leading-none font-black text-primary tracking-tight">
-            {formatCurrency(netWorth).replace('NGN', '₦')}
-          </h2>
-          <div className="flex items-center gap-2">
-            <span className="text-on-surface-variant text-[0.75rem] font-medium tracking-wide">Updated just now</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Horizontal Accounts Scroll */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Accounts</h3>
-          <Link href="/accounts" className="text-primary text-[0.75rem] font-medium">View All</Link>
-        </div>
-        <div className="flex gap-4 overflow-x-auto no-scrollbar -mx-6 px-6">
-          
-          {/* Savings Card */}
-          <div className="min-w-[200px] bg-surface-container-high p-5 rounded-xl space-y-4 border border-outline-variant/10">
-            <div className="flex justify-between items-start">
-              <div className="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
-                <span className="material-symbols-outlined">lock</span>
-              </div>
-              <span className="text-[10px] bg-outline-variant/20 text-on-surface-variant px-2 py-0.5 rounded uppercase font-bold tracking-wider">Locked</span>
+    <main className="pt-24 pb-32 px-4 sm:px-6 max-w-4xl mx-auto space-y-12">
+      
+      {/* ── Hero section: Net Worth ────────────────────── */}
+      <section className="relative px-8 py-10 bg-gradient-to-br from-surface-container-high via-surface-container-low to-surface-container-low rounded-[2rem] border border-outline-variant/10 shadow-2xl shadow-primary/5 overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/5 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div className="space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <p className="text-[10px] uppercase tracking-[0.2em] font-black text-on-surface-variant">Total Portfolio Net Worth</p>
             </div>
-            <div>
-              <p className="text-on-surface-variant text-[11px] font-medium uppercase tracking-wider">Savings</p>
-              <p className="text-xl font-bold mt-1 text-on-surface">{formatCurrency(savingsAccount?.balance || 0).replace('NGN', '₦')}</p>
-            </div>
-          </div>
-
-          {/* Betting Card */}
-          <div className="min-w-[200px] bg-surface-container-high p-5 rounded-xl space-y-4 border border-outline-variant/10 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-full -mr-12 -mt-12 blur-2xl"></div>
-            <div className="flex justify-between items-start relative z-10">
-              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                <span className="material-symbols-outlined">bolt</span>
-              </div>
-              <span className="text-[10px] bg-primary/20 text-primary px-2 py-0.5 rounded uppercase font-bold tracking-wider">Risk</span>
-            </div>
-            <div className="relative z-10">
-              <p className="text-on-surface-variant text-[11px] font-medium uppercase tracking-wider">Betting</p>
-              <p className="text-xl font-bold mt-1 text-on-surface">{formatCurrency(bettingAccount?.balance || 0).replace('NGN', '₦')}</p>
-            </div>
-          </div>
-
-          {/* Liquidity Card */}
-          <div className="min-w-[200px] bg-surface-container-high p-5 rounded-xl space-y-4 border border-outline-variant/10">
-            <div className="flex justify-between items-start">
-              <div className="w-10 h-10 rounded-lg bg-surface-container-highest flex items-center justify-center text-secondary">
-                <span className="material-symbols-outlined">account_balance_wallet</span>
-              </div>
-              <span className="text-[10px] bg-secondary/10 text-secondary px-2 py-0.5 rounded uppercase font-bold tracking-wider">Cash</span>
-            </div>
-            <div>
-              <p className="text-on-surface-variant text-[11px] font-medium uppercase tracking-wider">Liquidity</p>
-              <p className="text-xl font-bold mt-1 text-on-surface">{formatCurrency(liquidityAccount?.balance || 0).replace('NGN', '₦')}</p>
+            <h2 className="text-5xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-on-surface to-on-surface/80 tracking-tighter">
+              {formatCurrency(netWorth).replace('NGN', '₦')}
+            </h2>
+            <div className="flex items-center gap-1.5 mt-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase">Live sync active</span>
             </div>
           </div>
           
+          <Link href="/transactions" className="shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-primary text-on-primary hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95 group">
+            <span className="material-symbols-outlined font-black transition-transform group-hover:rotate-90">add</span>
+          </Link>
         </div>
       </section>
 
-      {/* Recent Activity */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Recent Activity</h3>
-          <Link href="/transactions" className="text-primary text-[0.75rem] font-medium">History</Link>
+      {/* ── Accounts ────────────────────────────────────── */}
+      <section className="space-y-5">
+        <div className="flex items-center justify-between px-2">
+          <h3 className="text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-black">Capital Allocation</h3>
+          <Link href="/accounts" className="text-primary text-[10px] uppercase tracking-widest font-black flex items-center gap-1 hover:underline">
+            View All <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+          </Link>
         </div>
-        <div className="space-y-2">
-          {recentTransactions.length === 0 ? (
-            <p className="text-on-surface-variant text-sm text-center py-6">No recent transactions.</p>
-          ) : (
-            recentTransactions.map(tx => (
-              <div key={tx.id} className="flex items-center justify-between p-4 bg-surface-container rounded-xl hover:bg-surface-container-high transition-colors group">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform ${
-                    tx.type === 'income' ? 'bg-primary/10 text-primary' : 
-                    tx.type === 'expense' ? 'bg-tertiary-container/10 text-tertiary-container' : 
-                    'bg-secondary/10 text-secondary'
-                  }`}>
-                    <span className="material-symbols-outlined">
-                      {tx.type === 'income' ? 'arrow_downward' : tx.type === 'expense' ? 'arrow_upward' : 'swap_horiz'}
-                    </span>
+        
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          
+          {/* Liquidity */}
+          <AccountCard 
+            title="Overview" 
+            label="Cash Liquidity" 
+            balance={liquidityAccount?.balance} 
+            icon="account_balance_wallet"
+            tint="secondary"
+          />
+
+          {/* Savings */}
+          <AccountCard 
+            title="Vault" 
+            label="Secured Savings" 
+            balance={savingsAccount?.balance} 
+            icon="lock"
+            tint="emerald"
+          />
+
+          {/* Betting */}
+          <AccountCard 
+            title="Capital" 
+            label="Active Betting" 
+            balance={bettingAccount?.balance} 
+            icon="bolt"
+            tint="primary"
+          />
+
+        </div>
+      </section>
+
+      <div className="grid md:grid-cols-2 gap-8 items-start">
+        {/* ── Recent Activity ─────────────────────────────── */}
+        <section className="space-y-5">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-black">Recent Activity</h3>
+            <Link href="/transactions" className="text-primary text-[10px] uppercase tracking-widest font-black hover:underline">History</Link>
+          </div>
+          <div className="space-y-3">
+            {recentTransactions.length === 0 ? (
+              <div className="bg-surface-container-low rounded-2xl border border-dashed border-outline-variant/20 p-8 text-center text-on-surface-variant">
+                <span className="material-symbols-outlined text-4xl mb-2 opacity-30">history</span>
+                <p className="text-[10px] uppercase tracking-widest font-bold">No recent transactions</p>
+              </div>
+            ) : (
+              recentTransactions.map(tx => (
+                <div key={tx.id} className="flex items-center justify-between p-4 bg-surface-container-low rounded-2xl border border-outline-variant/5 hover:border-outline-variant/20 transition-all hover:shadow-lg hover:shadow-primary/5 group">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-transform group-hover:scale-105 ${
+                      tx.type === 'income' ? 'bg-primary/10 text-primary' : 
+                      tx.type === 'expense' ? 'bg-red-500/10 text-red-500' : 
+                      'bg-secondary/10 text-secondary'
+                    }`}>
+                      <span className="material-symbols-outlined font-black">
+                        {tx.type === 'income' ? 'south_west' : tx.type === 'expense' ? 'north_east' : 'sync_alt'}
+                      </span>
+                    </div>
+                    <div>
+                      <p className="text-on-surface text-sm font-bold capitalize leading-none mb-1.5">{tx.type} {tx.note ? `- ${tx.note}` : ''}</p>
+                      <p className="text-zinc-500 text-[10px] font-bold uppercase tracking-widest">
+                        {tx.type === 'transfer' ? `To ${(tx.to_account as {name?: string})?.name}` : tx.type}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-on-surface text-sm font-bold capitalize">{tx.type} {tx.note ? `- ${tx.note}` : ''}</p>
-                    <p className="text-on-surface-variant text-[0.75rem]">
-                      {tx.type === 'transfer' ? `From ${(tx.from_account as {name?: string})?.name} to ${(tx.to_account as {name?: string})?.name}` : ((tx.from_account as {name?: string})?.name || (tx.to_account as {name?: string})?.name || 'Account')}
+                  <div className="text-right">
+                    <p className={`font-black tracking-tight ${tx.type === 'income' ? 'text-primary' : tx.type === 'expense' ? 'text-red-400' : 'text-on-surface'}`}>
+                      {tx.type === 'expense' ? '-' : tx.type === 'income' ? '+' : ''}{formatCurrency(tx.amount).replace('NGN', '₦')}
+                    </p>
+                    <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-widest mt-0.5">
+                      {new Date(tx.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}
                     </p>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className={`font-black ${tx.type === 'income' ? 'text-primary' : tx.type === 'expense' ? 'text-on-tertiary-fixed-variant' : 'text-on-surface'}`}>
-                    {tx.type === 'expense' ? '-' : tx.type === 'income' ? '+' : ''}{formatCurrency(tx.amount).replace('NGN', '₦')}
-                  </p>
-                  <p className="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest">{tx.type}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
-      
-      {/* Top Pick Today — Premium teaser */}
-      <TopPickSection supabase={supabase} isPremium={isPremium} />
+              ))
+            )}
+          </div>
+        </section>
 
-      {/* Contextual FAB */}
-      <Link href="/transactions" className="fixed bottom-28 right-6 w-14 h-14 bg-primary text-on-primary rounded-full shadow-lg shadow-primary/20 flex items-center justify-center active:scale-90 transition-all z-40">
-        <span className="material-symbols-outlined text-[32px] font-bold">add</span>
-      </Link>
+        {/* ── Top Pick / Premium Teaser ───────────────────── */}
+        <section className="space-y-5">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-on-surface-variant text-[10px] uppercase tracking-[0.2em] font-black">Intelligence</h3>
+            <Link href="/predictions" className="text-primary text-[10px] uppercase tracking-widest font-black hover:underline">View Picks</Link>
+          </div>
+          <TopPickSection supabase={supabase} isPremium={isPremium} />
+        </section>
+      </div>
+
     </main>
+  )
+}
+
+function AccountCard({ title, label, balance, icon, tint }: { title: string, label: string, balance: number | undefined, icon: string, tint: 'primary' | 'secondary' | 'emerald' }) {
+  const formatCurrency = (amount: number) => new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(amount).replace('NGN', '₦')
+  
+  const tintMap = {
+    primary: { ring: 'ring-primary/20', bg: 'bg-primary/5', text: 'text-primary', badge: 'bg-primary/10 text-primary border-primary/20' },
+    secondary: { ring: 'ring-secondary/20', bg: 'bg-secondary/5', text: 'text-secondary', badge: 'bg-secondary/10 text-secondary border-secondary/20' },
+    emerald: { ring: 'ring-emerald-500/20', bg: 'bg-emerald-500/5', text: 'text-emerald-500', badge: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' },
+  }
+  const theme = tintMap[tint]
+
+  return (
+    <div className={`relative bg-surface-container-low p-6 rounded-[1.5rem] border border-outline-variant/10 ring-1 ${theme.ring} hover:scale-[1.02] transition-transform duration-300 overflow-hidden group`}>
+      {/* Subtle shine */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      
+      <div className="flex justify-between items-start mb-6">
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${theme.bg} ${theme.text}`}>
+          <span className="material-symbols-outlined text-[20px] font-black">{icon}</span>
+        </div>
+        <span className={`text-[8px] px-2 py-1 rounded-md uppercase font-black tracking-widest border ${theme.badge}`}>
+          {title}
+        </span>
+      </div>
+      <div>
+        <p className="text-zinc-500 text-[10px] font-black uppercase tracking-widest mb-1">{label}</p>
+        <p className="text-2xl font-black text-on-surface tracking-tighter">
+          {formatCurrency(balance || 0)}
+        </p>
+      </div>
+    </div>
   )
 }
 
@@ -167,54 +210,76 @@ export default async function DashboardPage() {
 async function TopPickSection({ supabase, isPremium }: { supabase: any; isPremium: boolean }) {
   if (!isPremium) {
     return (
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Top Pick Today</h3>
-          <Link href="/predictions" className="text-primary text-[0.75rem] font-medium">View All Picks</Link>
+      <div className="relative rounded-[1.5rem] bg-surface-container-low border border-outline-variant/10 p-6 overflow-hidden min-h-[180px] flex flex-col justify-center ring-1 ring-primary/20">
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-primary/5 pointer-events-none" />
+        
+        {/* Blurred background content */}
+        <div className="blur border border-outline-variant/10 rounded-xl p-4 opacity-50 select-none pointer-events-none" aria-hidden>
+          <p className="text-[10px] uppercase font-bold text-on-surface-variant mb-1">Football</p>
+          <p className="font-bold text-on-surface text-lg">Liverpool vs Arsenal</p>
+          <p className="text-primary font-bold mt-2">Home Win (2.15)</p>
         </div>
-        <div className="relative rounded-xl bg-surface-container-high border border-outline-variant/10 p-5 overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-secondary/5 pointer-events-none" />
-          <div className="blur-sm pointer-events-none select-none" aria-hidden>
-            <p className="text-on-surface font-bold">Arsenal vs Man City</p>
-            <p className="text-on-surface-variant text-sm mt-1">Confidence: 74% · Odds: 2.10</p>
-          </div>
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Link href="/pricing" className="flex items-center gap-2 bg-primary text-on-primary px-5 py-2.5 rounded-full font-bold text-xs uppercase tracking-widest shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-              <span className="material-symbols-outlined text-sm">lock</span>
-              Unlock with Pro
-            </Link>
-          </div>
+
+        {/* Lock overlay */}
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-surface-container/40 backdrop-blur-[2px]">
+          <span className="material-symbols-outlined text-3xl text-primary mb-3">lock</span>
+          <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-4">Pro Feature Locked</p>
+          <Link href="/pricing" className="px-6 py-2.5 bg-primary text-on-primary rounded-full font-black text-[10px] uppercase tracking-widest hover:bg-primary/90 transition-all shadow-lg shadow-primary/20 hover:scale-105 active:scale-95">
+            Upgrade Now
+          </Link>
         </div>
-      </section>
+      </div>
     )
   }
 
   const { data: pick } = await supabase
     .from('predictions_cache')
-    .select('match, prediction, confidence, odds, sport')
+    .select('match, prediction, confidence, odds, sport, market')
     .order('confidence', { ascending: false })
     .limit(1)
     .single()
 
-  if (!pick) return null
+  if (!pick) {
+    return (
+      <div className="rounded-[1.5rem] bg-surface-container-low border border-dashed border-outline-variant/20 p-8 text-center text-on-surface-variant flex flex-col items-center justify-center min-h-[180px]">
+        <span className="material-symbols-outlined text-4xl mb-2 opacity-30">analytics</span>
+        <p className="text-[10px] uppercase tracking-widest font-bold">Engine analyzing markets...</p>
+      </div>
+    )
+  }
 
-  const color = pick.confidence >= 70 ? 'text-primary' : pick.confidence >= 50 ? 'text-yellow-400' : 'text-tertiary'
+  const isGold = pick.confidence >= 70
+  const colorClass = isGold ? 'text-primary' : pick.confidence >= 50 ? 'text-yellow-400' : 'text-zinc-400'
+  const bgClass = isGold ? 'bg-primary/10 border-primary/20 text-primary' : 'bg-surface-container-highest border-outline-variant/10 text-on-surface-variant'
 
   return (
-    <section className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h3 className="text-on-surface-variant text-[0.6875rem] uppercase tracking-[0.1em] font-bold">Top Pick Today</h3>
-        <Link href="/predictions" className="text-primary text-[0.75rem] font-medium">View All Picks</Link>
-      </div>
-      <div className="rounded-xl bg-surface-container-high border border-outline-variant/10 p-5 space-y-2">
-        <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-bold">{pick.sport}</p>
-        <p className="text-on-surface font-bold">{pick.match}</p>
-        <div className="flex items-center justify-between mt-2">
-          <span className="text-sm font-bold text-on-surface">Prediction: <span className={color}>{pick.prediction}</span></span>
-          <span className={`text-xs font-black uppercase tracking-widest ${color}`}>{pick.confidence}% confidence</span>
+    <div className={`relative rounded-[1.5rem] bg-surface-container-low border border-outline-variant/10 p-6 overflow-hidden ring-1 ${isGold ? 'ring-primary/20 hover:shadow-2xl hover:shadow-primary/10' : 'ring-outline-variant/10 hover:shadow-xl hover:shadow-black/5'} transition-all group`}>
+       {isGold && <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent" />}
+
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest border ${bgClass}`}>
+            {isGold ? 'Daily Gold Pick' : 'Top Recommendation'}
+          </span>
+          <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5">
+            <span className={`w-1.5 h-1.5 rounded-full ${isGold ? 'bg-primary' : 'bg-yellow-400'}`} />
+            {pick.sport}
+          </p>
         </div>
-        <p className="text-xs text-on-surface-variant">Best odds: <span className="font-bold text-primary">{Number(pick.odds).toFixed(2)}</span></p>
+        <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black ${isGold ? 'bg-primary text-on-primary shadow-lg shadow-primary/20' : 'bg-surface-container-highest text-on-surface'}`}>
+          {pick.confidence}%
+        </div>
       </div>
-    </section>
+      
+      <p className="font-bold text-on-surface text-lg leading-snug mb-4">{pick.match}</p>
+      
+      <div className="bg-surface-container-highest/40 rounded-xl p-4 border border-outline-variant/5">
+        <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">Engine Verdict</p>
+        <div className="flex items-center justify-between">
+          <p className={`font-black tracking-tight ${colorClass}`}>{pick.prediction}</p>
+          <span className="text-[10px] font-mono text-zinc-400">Odds: <span className="font-black text-on-surface text-sm">{Number(pick.odds).toFixed(2)}</span></span>
+        </div>
+      </div>
+    </div>
   )
 }

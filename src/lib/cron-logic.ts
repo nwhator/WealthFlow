@@ -4,27 +4,51 @@ import { calculateArbitrage } from '@/lib/arbitrage-utils'
 import { generatePredictions } from '@/lib/prediction-engine'
 import { Outcome } from '@/lib/arbitrage-utils'
 
+const REFRESH_INTERVAL_HOURS = 48
+
 export async function runFullDataRefresh() {
   const supabase = await createClient()
-  console.log('[Cron-Logic] Starting TOTAL DE-RESTRICTED refresh...')
-  
+  console.log('[Cron-Logic] Starting refresh check...')
+
+  // ── 48-hour guard ─────────────────────────────────────────────
+  const { data: latestRow } = await supabase
+    .from('predictions_cache')
+    .select('fetched_at')
+    .order('fetched_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (latestRow?.fetched_at) {
+    const lastFetch = new Date(latestRow.fetched_at)
+    const hoursSince = (Date.now() - lastFetch.getTime()) / (1000 * 60 * 60)
+    if (hoursSince < REFRESH_INTERVAL_HOURS) {
+      const nextUpdate = new Date(lastFetch.getTime() + REFRESH_INTERVAL_HOURS * 60 * 60 * 1000)
+      console.log(`[Cron-Logic] Data is fresh (${hoursSince.toFixed(1)}h old). Skipping API call.`)
+      return {
+        skipped: true,
+        reason: 'Data is still fresh',
+        lastUpdated: lastFetch.toISOString(),
+        nextUpdate: nextUpdate.toISOString(),
+      }
+    }
+  }
+
+  console.log('[Cron-Logic] Data is stale. Fetching from API...')
   const games = await getNormalizedOdds()
   if (!games || games.length === 0) {
     console.warn('[Cron-Logic] API returned 0 games. Nothing to process.')
     return { error: 'Empty API response', timestamp: new Date().toISOString() }
   }
-  console.log(`[Cron-Logic] Fetched ${games.length} total games`);
+  console.log(`[Cron-Logic] Fetched ${games.length} total games`)
 
-  // NO MORE DATE FILTERING - USE ALL GAMES
-  const relevantGames = games;
-  console.log(`[Cron-Logic] Processing ALL ${relevantGames.length} games (No date limit applied)`)
+  // NO DATE FILTERING — process all games
+  const relevantGames = games
 
   // 1. Predictions Cache
   const predictions = generatePredictions(relevantGames)
-  console.log(`[Cron-Logic] Generated ${predictions.length} total predictions`)
+  console.log(`[Cron-Logic] Generated ${predictions.length} predictions`)
 
   if (predictions.length > 0) {
-    // We only clear if we have new data to replace it with
     await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
     const { error: insErr } = await supabase.from('predictions_cache').insert(
       predictions.map(p => ({
@@ -61,7 +85,9 @@ export async function runFullDataRefresh() {
         const mkt = bookie.markets.find(m => m.key === mKey)
         if (!mkt) continue
         for (const outcome of mkt.outcomes) {
-          const label = mKey === 'h2h' ? outcome.name : `${outcome.name} ${outcome.point !== undefined ? (outcome.point > 0 ? '+' : '') + outcome.point : ''}`.trim()
+          const label = mKey === 'h2h'
+            ? outcome.name
+            : `${outcome.name} ${outcome.point !== undefined ? (outcome.point > 0 ? '+' : '') + outcome.point : ''}`.trim()
           if (!outcomesByName[label]) outcomesByName[label] = []
           outcomesByName[label].push({ name: label, odds: outcome.odds, bookmaker: outcome.bookmaker })
         }
@@ -98,9 +124,34 @@ export async function runFullDataRefresh() {
     if (arbErr) console.error('[Cron-Logic] Arbitrage insert error:', arbErr)
   }
 
+  const now = new Date()
   return {
     predictions: predictions.length,
     arbitrage: arbitrageOpps.length,
-    timestamp: new Date().toISOString(),
+    lastUpdated: now.toISOString(),
+    nextUpdate: new Date(now.getTime() + REFRESH_INTERVAL_HOURS * 60 * 60 * 1000).toISOString(),
+  }
+}
+
+/** Returns cache metadata without touching the API */
+export async function getCacheStatus() {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('predictions_cache')
+    .select('fetched_at')
+    .order('fetched_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (!data?.fetched_at) return { lastUpdated: null, nextUpdate: null, isStale: true }
+
+  const lastUpdated = new Date(data.fetched_at)
+  const nextUpdate = new Date(lastUpdated.getTime() + REFRESH_INTERVAL_HOURS * 60 * 60 * 1000)
+  const isStale = Date.now() > nextUpdate.getTime()
+
+  return {
+    lastUpdated: lastUpdated.toISOString(),
+    nextUpdate: nextUpdate.toISOString(),
+    isStale,
   }
 }

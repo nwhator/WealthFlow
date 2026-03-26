@@ -4,6 +4,7 @@ import { getUserPlan } from '@/lib/subscription'
 import PremiumPaywall from '@/components/PremiumPaywall'
 import Link from 'next/link'
 import DataFreshnessIndicator from '@/components/DataFreshnessIndicator'
+import ScanButton from '@/components/ScanButton'
 
 type Prediction = {
   id: string
@@ -109,7 +110,8 @@ export default async function PredictionsPage() {
               <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">Picks</span>
             </h1>
             <p className="text-on-surface-variant leading-relaxed text-base max-w-lg">
-              Value opportunities surfaced by our multi-market statistical engine. Data updates automatically every 48 hours to conserve API credits.
+              Value opportunities surfaced by our multi-market statistical engine. Data updates automatically every 24 hours to conserve API credits.
+              <ScanButton />
             </p>
           </div>
 
@@ -168,8 +170,9 @@ export default async function PredictionsPage() {
           <span className="material-symbols-outlined text-7xl text-on-surface-variant mb-4 opacity-30 block">analytics</span>
           <p className="text-on-surface-variant font-bold text-lg">No picks available yet.</p>
           <p className="text-on-surface-variant/60 text-sm mt-2 max-w-xs mx-auto leading-relaxed">
-            The prediction engine runs automatically every 48 hours. Check back after the next scheduled data refresh shown above.
+            The prediction engine runs automatically every 24 hours. Check back after the next scheduled data refresh shown above, or run a manual scan.
           </p>
+          <div className="mt-4"><ScanButton /></div>
           <p className="text-on-surface-variant/40 text-xs mt-4 font-bold uppercase tracking-widest">Engine data auto-updates • No action required</p>
         </div>
       ) : (

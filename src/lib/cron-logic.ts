@@ -4,7 +4,7 @@ import { calculateArbitrage } from '@/lib/arbitrage-utils'
 import { generatePredictions } from '@/lib/prediction-engine'
 import { Outcome } from '@/lib/arbitrage-utils'
 
-const REFRESH_INTERVAL_HOURS = 48
+const REFRESH_INTERVAL_HOURS = 24
 
 export async function runFullDataRefresh(force: boolean = false) {
   const supabase = await createClient()

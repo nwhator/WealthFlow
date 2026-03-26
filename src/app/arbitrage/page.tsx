@@ -5,6 +5,7 @@ import { bookmarkOpportunity, getSavedOpportunities } from './actions'
 import PremiumPaywall from '@/components/PremiumPaywall'
 import Link from 'next/link'
 import DataFreshnessIndicator from '@/components/DataFreshnessIndicator'
+import ScanButton from '@/components/ScanButton'
 
 type Outcome = {
   name: string
@@ -168,13 +169,16 @@ export default function ArbitrageDashboard() {
               </h1>
               <p className="text-on-surface-variant text-base max-w-lg leading-relaxed mb-4">
                 {activeTab === 'Live'
-                  ? 'Identify guaranteed-profit discrepancies across global sportsbooks. Data refreshes every 48h.'
+                  ? 'Identify guaranteed-profit discrepancies across global sportsbooks. Data refreshes every 24h.'
                   : 'Review your previously identified arbitrage opportunities.'}
               </p>
-              <Link href="/arbitrage/calculator" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-[0.1em] text-[10px] hover:underline">
-                <span className="material-symbols-outlined text-sm">calculate</span>
-                Manual Calculator
-              </Link>
+              <div className="flex gap-4 items-center">
+                <Link href="/arbitrage/calculator" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-[0.1em] text-[10px] hover:underline">
+                  <span className="material-symbols-outlined text-sm">calculate</span>
+                  Manual Calculator
+                </Link>
+                {activeTab === 'Live' && <ScanButton />}
+              </div>
             </div>
 
             {/* KPIs */}
@@ -245,7 +249,7 @@ export default function ArbitrageDashboard() {
           <div className="text-center py-24 bg-surface-container-low rounded-3xl border border-dashed border-outline-variant/20">
             <span className="material-symbols-outlined text-7xl text-on-surface-variant mb-4 opacity-30 block">search_off</span>
             <p className="text-on-surface-variant font-bold text-lg">No profitable opportunities right now.</p>
-            <p className="text-on-surface-variant/60 text-sm mt-2">Data refreshes automatically every 48 hours.</p>
+            <p className="text-on-surface-variant/60 text-sm mt-2">Data refreshes automatically every 24 hours.</p>
           </div>
         ) : isPremium !== false ? (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

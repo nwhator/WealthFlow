@@ -242,7 +242,7 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Market Probe</p>
-            <p className="text-sm font-bold text-on-surface">{(op.impliedProb * 100).toFixed(1)}%</p>
+            <p className="text-sm font-bold text-on-surface">{((op.impliedProb || 0) * 100).toFixed(1)}%</p>
           </div>
         </div>
 

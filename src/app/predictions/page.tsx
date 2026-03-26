@@ -106,8 +106,15 @@ export default async function PredictionsPage() {
                       <h3 className="font-bold text-on-surface leading-snug">{p.match}</h3>
                       <p className="text-[10px] text-on-surface-variant mt-0.5">{formatDate(p.commence_time)}</p>
                     </div>
-                    <div className={`shrink-0 px-2.5 py-1 rounded-lg ${color.badge} text-xs font-black uppercase tracking-widest`}>
-                      {p.confidence}%
+                    <div className="flex gap-2 shrink-0">
+                      {p.edge > 3 && (
+                        <div className="px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 text-[10px] font-black uppercase tracking-widest border border-emerald-500/20">
+                          High Value
+                        </div>
+                      )}
+                      <div className={`px-2.5 py-1 rounded-lg ${color.badge} text-xs font-black uppercase tracking-widest`}>
+                        {p.confidence}%
+                      </div>
                     </div>
                   </div>
 
@@ -135,16 +142,18 @@ export default async function PredictionsPage() {
                   </div>
 
                   {/* Statistical Edge Analysis */}
-                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-2 gap-4">
+                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-3 gap-2">
                     <div className="space-y-1">
-                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Market Avg</p>
-                      <p className="text-sm font-bold text-on-surface">{p.market_average.toFixed(2)}</p>
-                      <p className="text-[9px] text-zinc-500 font-bold leading-none">Global Consensus</p>
+                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Bookie Prob</p>
+                      <p className="text-xs font-bold text-on-surface">{(1 / (p.odds || 1) * 100).toFixed(1)}%</p>
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Value Edge</p>
-                      <p className="text-sm font-black text-primary">+{p.edge.toFixed(1)}%</p>
-                      <p className="text-[9px] text-zinc-500 font-bold leading-none">Advantage vs Market</p>
+                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Market Avg</p>
+                      <p className="text-xs font-bold text-on-surface">{(p.market_average || 0).toFixed(2)}</p>
+                    </div>
+                    <div className="space-y-1 text-right">
+                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Value Edge</p>
+                      <p className="text-xs font-black text-primary">+{(p.edge || 0).toFixed(1)}%</p>
                     </div>
                   </div>
 
@@ -156,7 +165,7 @@ export default async function PredictionsPage() {
                   </div>
                   
                   <div className="flex items-center justify-between text-[9px] text-zinc-500 font-black uppercase tracking-widest pt-2">
-                    <span>Vig: {p.market_margin.toFixed(1)}%</span>
+                    <span>Vig: {(p.market_margin || 0).toFixed(1)}%</span>
                     <span>Ref: WF-AI-v4</span>
                   </div>
                 </div>

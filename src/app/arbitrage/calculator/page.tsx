@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 
 type CalculationResult = {
@@ -18,10 +18,6 @@ export default function ArbitrageCalculator() {
   const [odds, setOdds] = useState<string[]>(['2.10', '2.10'])
   const [result, setResult] = useState<CalculationResult | null>(null)
 
-  useEffect(() => {
-    calculate()
-  }, [mode, bankroll, odds])
-
   const handleOddsChange = (idx: number, val: string) => {
     const next = [...odds]
     next[idx] = val
@@ -33,7 +29,7 @@ export default function ArbitrageCalculator() {
     setOdds(newMode === '2-way' ? ['2.10', '2.10'] : ['3.10', '3.10', '3.10'])
   }
 
-  const calculate = () => {
+  const calculate = useCallback(() => {
     const numericOdds = odds.map(o => parseFloat(o))
     if (numericOdds.some(o => isNaN(o) || o <= 1)) {
       setResult(null)
@@ -61,7 +57,11 @@ export default function ArbitrageCalculator() {
       stakes,
       payouts
     })
-  }
+  }, [bankroll, odds])
+
+  useEffect(() => {
+    calculate()
+  }, [calculate])
 
   const formatCurrency = (val: number) => {
     return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(val).replace('NGN', '₦')

@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
 import { getSubscription } from '@/lib/subscription'
 import CheckoutButton from '@/components/CheckoutButton'
 import Link from 'next/link'

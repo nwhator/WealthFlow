@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
 import { activatePremium, deactivateSubscription } from '@/lib/subscription'
 
 // Paddle-Signature header verification usually requires @paddle/paddle-node-sdk
@@ -19,12 +18,11 @@ export async function POST(request: Request) {
         const userId = payload.data.custom_data?.user_id
         if (!userId) break
 
-        const subId = payload.data.id
         const customerId = payload.data.customer_id
         const priceId = payload.data.items[0]?.price?.id
         const periodEnd = new Date(payload.data.current_billing_period?.ends_at || Date.now() + 30 * 24 * 60 * 60 * 1000)
 
-        await activatePremium(userId, customerId, subId, priceId, periodEnd)
+        await activatePremium(userId, customerId, payload.data.id, priceId, periodEnd)
         console.log(`[Paddle] Activated premium for user ${userId}`)
         break
       }

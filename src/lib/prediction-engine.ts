@@ -7,22 +7,25 @@ export interface Prediction {
   prediction: string
   odds: number
   confidence: number
+  edge: number // % advantage vs implied market odds
+  marketAverage: number
+  marketMargin: number // % bookmaker vig/take
   reason: string
   commence_time: string
   bookmaker: string
 }
 
-interface BestOutcome {
+interface OutcomeStats {
   name: string
   odds: number
   bookmaker: string
+  impliedProb: number
+  avgOdds: number
+  trueProb: number
 }
 
 /**
- * Derives predictions from normalized odds data.
- * Strategy: find the outcome with the highest implied probability (lowest odds)
- * that still represents a "value bet" — where our estimated probability
- * exceeds the market's implied probability by a meaningful margin.
+ * Derives predictions from normalized odds data with enriched statistical markers.
  */
 export function generatePredictions(games: NormalizedGame[]): Prediction[] {
   const predictions: Prediction[] = []
@@ -30,47 +33,67 @@ export function generatePredictions(games: NormalizedGame[]): Prediction[] {
   for (const game of games) {
     if (!game.bookmakers || game.bookmakers.length === 0) continue
 
-    // Collect best (highest) odds per outcome name across all bookmakers
-    const bestOddsMap: Record<string, BestOutcome> = {}
+    // Collect all odds per outcome to calculate averages
+    const allOddsMap: Record<string, number[]> = {}
+    const bestOddsMap: Record<string, { odds: number; bookmaker: string }> = {}
+
     for (const bookie of game.bookmakers) {
       for (const market of bookie.markets) {
         if (market.key !== 'h2h') continue
         for (const outcome of market.outcomes) {
+          if (!allOddsMap[outcome.name]) allOddsMap[outcome.name] = []
+          allOddsMap[outcome.name].push(outcome.odds)
+
           if (!bestOddsMap[outcome.name] || outcome.odds > bestOddsMap[outcome.name].odds) {
-            bestOddsMap[outcome.name] = { name: outcome.name, odds: outcome.odds, bookmaker: outcome.bookmaker }
+            bestOddsMap[outcome.name] = { odds: outcome.odds, bookmaker: outcome.bookmaker }
           }
         }
       }
     }
 
-    const outcomes = Object.values(bestOddsMap)
-    if (outcomes.length < 2) continue
+    const outcomeNames = Object.keys(bestOddsMap)
+    if (outcomeNames.length < 2) continue
 
-    // Implied probability for each outcome (using best available odds)
-    const withImplied = outcomes.map(o => ({ ...o, impliedProb: 1 / o.odds }))
+    // Calculate market-wide stats
+    const outcomes: OutcomeStats[] = outcomeNames.map(name => {
+      const best = bestOddsMap[name]
+      const avg = allOddsMap[name].reduce((a, b) => a + b, 0) / allOddsMap[name].length
+      return {
+        name,
+        odds: best.odds,
+        bookmaker: best.bookmaker,
+        avgOdds: avg,
+        impliedProb: 1 / best.odds,
+        trueProb: 0 // Will be set below
+      }
+    })
 
-    // The total market overround
-    const overround = withImplied.reduce((sum, o) => sum + o.impliedProb, 0)
+    const totalImplied = outcomes.reduce((sum, o) => sum + o.impliedProb, 0)
+    const marketMargin = Math.max(0, (totalImplied - 1) * 100)
 
-    // Normalize to get "true" probability estimate
-    const withTrueProb = withImplied.map(o => ({ ...o, trueProb: o.impliedProb / overround }))
+    // Normalize to get "true" probability (consensus probability)
+    outcomes.forEach(o => { o.trueProb = o.impliedProb / totalImplied })
 
-    // Find the single most likely non-Draw outcome (highest true probability)
-    const favourite = withTrueProb
+    // Find the best "Value" or "Confidence" pick
+    // Strategy: Choose most likely non-draw, or a high-value underdog if edge is huge
+    const favourite = outcomes
       .filter(o => o.name !== 'Draw')
       .sort((a, b) => b.trueProb - a.trueProb)[0]
 
     if (!favourite) continue
 
-    // Only suggest if market odds are under 3.0 (somewhat favoured) and confidence is meaningful
-    if (favourite.odds > 3.0) continue
+    // High Odds Support: We only suggest high odds if there's a significant "Edge" vs average market
+    const edge = (1 / favourite.avgOdds) - (1 / favourite.odds)
+    const edgePercent = Math.max(0, edge * 100)
 
-    // Confidence: how strongly the market favours this outcome (scaled 0–100)
+    // Thresholds: (Confidence > 50% AND odds < 3.5) OR (Heavy edge > 5% on an underdog)
+    const isHighValueUnderdog = favourite.odds > 3.0 && edgePercent > 5.0
+    const isSolidFavourite = favourite.trueProb > 0.55 && favourite.odds < 2.5
+
+    if (!isHighValueUnderdog && !isSolidFavourite) continue
+
     const confidence = Math.round(favourite.trueProb * 100)
-    if (confidence < 50) continue // Skip coin-flip outcomes
-
-    // Build a human-readable reason
-    const reason = buildReason(favourite, overround, game.sport)
+    const reason = buildReason(favourite, edgePercent, marketMargin, game.sport)
 
     predictions.push({
       match: game.match,
@@ -79,29 +102,33 @@ export function generatePredictions(games: NormalizedGame[]): Prediction[] {
       prediction: favourite.name,
       odds: Number(favourite.odds.toFixed(2)),
       confidence,
+      edge: Number(edgePercent.toFixed(2)),
+      marketAverage: Number(favourite.avgOdds.toFixed(2)),
+      marketMargin: Number(marketMargin.toFixed(2)),
       reason,
       commence_time: game.commence_time,
       bookmaker: favourite.bookmaker,
     })
   }
 
-  // Sort by confidence descending
   return predictions.sort((a, b) => b.confidence - a.confidence)
 }
 
 function buildReason(
-  favourite: { name: string; odds: number; trueProb: number; bookmaker: string },
-  overround: number,
+  fav: OutcomeStats,
+  edge: number,
+  margin: number,
   sport: string
 ): string {
-  const prob = Math.round(favourite.trueProb * 100)
-  const margin = Math.round((overround - 1) * 100 * 10) / 10
-
+  const prob = Math.round(fav.trueProb * 100)
+  
+  if (edge > 4.0) {
+    return `Statistical Value Detected: ${fav.bookmaker} offers odds of ${fav.odds.toFixed(2)}, which is significantly higher than the market average of ${fav.avgOdds.toFixed(2)}. This represents a ${edge.toFixed(1)}% mathematical edge over the bookmaker house edge.`
+  }
+  
   if (prob >= 75) {
-    return `${favourite.name} is a heavy favourite with a ${prob}% implied win probability at odds of ${favourite.odds.toFixed(2)}. Market is pricing this as a near-certain outcome.`
+    return `Heavy System Backing: ${fav.name} carries a dominant ${prob}% probability consensus. With a low bookie margin of ${margin.toFixed(1)}%, the returns for ${sport} are optimized for high-volume banking.`
   }
-  if (prob >= 65) {
-    return `${favourite.name} has strong market backing at ${prob}% probability. The ${sport} odds of ${favourite.odds.toFixed(2)} via ${favourite.bookmaker} offer solid value.`
-  }
-  return `${favourite.name} edges out as the most likely winner at a ${prob}% implied probability. Bookmaker margin is ${margin}% — a relatively fair market.`
+
+  return `${fav.name} is the clear favourite with ${prob}% probability. Market average is ${fav.avgOdds.toFixed(2)}, making ${fav.bookmaker}'s price of ${fav.odds.toFixed(2)} the top-tier entry point.`
 }

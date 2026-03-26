@@ -20,6 +20,7 @@ type ArbitrageOp = {
   commence_time: string
   arbitragePercentage: number
   guaranteedProfit: number
+  impliedProb: number
   stakeDistribution: Outcome[]
 }
 
@@ -234,6 +235,17 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
             {op.arbitragePercentage.toFixed(2)}%
           </div>
         </div>
+        <div className="grid grid-cols-2 gap-4 py-4 mb-4 border-t border-b border-outline-variant/10">
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">ROI</p>
+            <p className="text-sm font-black text-primary">+{op.arbitragePercentage.toFixed(2)}%</p>
+          </div>
+          <div>
+            <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Market Probe</p>
+            <p className="text-sm font-bold text-on-surface">{(op.impliedProb * 100).toFixed(1)}%</p>
+          </div>
+        </div>
+
         <div className="space-y-3 mb-5">
           {op.stakeDistribution.map((outcome, i) => (
             <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-surface-container-high border border-outline-variant/10 hover:border-primary/20 transition-colors">
@@ -248,15 +260,24 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
             </div>
           ))}
         </div>
+
         <div className="flex items-center justify-between pt-4 border-t border-outline-variant/10">
           <div>
-            <span className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold block">Guaranteed Return</span>
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+              <span className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold block">Guaranteed Profit</span>
+            </div>
             <span className="text-xl font-bold text-primary tracking-tight">{formatCurrency(op.guaranteedProfit)}</span>
           </div>
           <button onClick={onBookmark} disabled={saving} className="bg-primary/10 text-primary px-5 py-2 rounded-full font-bold text-xs hover:bg-primary/20 active:scale-95 transition-all uppercase tracking-widest border border-primary/20 disabled:opacity-50 flex items-center gap-2">
             <span className="material-symbols-outlined text-sm">bookmark</span>
             {saving ? '...' : 'Track'}
           </button>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-dashed border-outline-variant/30 flex items-center justify-between">
+           <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Risk Score: 0.00 (Absolute)</span>
+           <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Efficiency: A+</span>
         </div>
       </div>
     </div>

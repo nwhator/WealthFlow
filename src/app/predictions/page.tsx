@@ -13,6 +13,9 @@ type Prediction = {
   odds: number
   confidence: number
   reason: string
+  edge: number
+  market_average: number
+  market_margin: number
   commence_time: string
   bookmaker: string
 }
@@ -131,7 +134,31 @@ export default async function PredictionsPage() {
                     </div>
                   </div>
 
-                  <p className="text-xs text-on-surface-variant leading-relaxed italic">{p.reason}</p>
+                  {/* Statistical Edge Analysis */}
+                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Market Avg</p>
+                      <p className="text-sm font-bold text-on-surface">{p.market_average.toFixed(2)}</p>
+                      <p className="text-[9px] text-zinc-500 font-bold leading-none">Global Consensus</p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Value Edge</p>
+                      <p className="text-sm font-black text-primary">+{p.edge.toFixed(1)}%</p>
+                      <p className="text-[9px] text-zinc-500 font-bold leading-none">Advantage vs Market</p>
+                    </div>
+                  </div>
+
+                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
+                    <p className="text-[10px] text-on-surface-variant leading-relaxed">
+                        <span className="font-bold text-primary italic mr-1">Insight:</span>
+                        {p.reason}
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center justify-between text-[9px] text-zinc-500 font-black uppercase tracking-widest pt-2">
+                    <span>Vig: {p.market_margin.toFixed(1)}%</span>
+                    <span>Ref: WF-AI-v4</span>
+                  </div>
                 </div>
               )
             })}

@@ -33,6 +33,9 @@ create table if not exists predictions_cache (
   odds           numeric,
   confidence     integer check (confidence between 0 and 100),
   reason         text,
+  edge           numeric default 0,
+  market_average numeric default 0,
+  market_margin  numeric default 0,
   commence_time  text,
   bookmaker      text,
   fetched_at     timestamp with time zone default now()

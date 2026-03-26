@@ -25,6 +25,9 @@ export async function runFullDataRefresh() {
         odds: p.odds,
         confidence: p.confidence,
         reason: p.reason,
+        edge: p.edge,
+        market_average: p.marketAverage,
+        market_margin: p.marketMargin,
         commence_time: p.commence_time,
         bookmaker: p.bookmaker,
       }))

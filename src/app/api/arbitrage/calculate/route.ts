@@ -45,6 +45,7 @@ export async function GET(request: Request) {
       commence_time: row.commence_time,
       arbitragePercentage: Number(Number(row.arbitrage_percentage).toFixed(3)),
       guaranteedProfit: Number((Number(row.guaranteed_profit) * ratio).toFixed(2)),
+      impliedProb: Number(row.implied_prob),
       stakeDistribution,
     }
   })

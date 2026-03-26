@@ -1,6 +1,7 @@
 export interface OddsAPIOutcome {
   name: string;
   price: number;
+  point?: number;
 }
 export interface OddsAPIMarket {
   key: string;
@@ -31,6 +32,7 @@ export interface NormalizedGame {
       outcomes: {
         name: string;
         odds: number;
+        point?: number;
         bookmaker: string;
       }[];
     }[];
@@ -97,6 +99,7 @@ export async function getNormalizedOdds(): Promise<NormalizedGame[]> {
             outcomes: (m.outcomes || []).map((o: OddsAPIOutcome) => ({
               name: o.name,
               odds: o.price,
+              point: o.point,
               bookmaker: b.title
             }))
           }))

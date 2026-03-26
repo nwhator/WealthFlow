@@ -14,6 +14,7 @@ type Outcome = {
 }
 
 type ArbitrageOp = {
+  id: string
   sport: string
   match: string
   market: string
@@ -25,7 +26,7 @@ type ArbitrageOp = {
 }
 
 type SavedOp = {
-  id: number
+  id: string
   match: string
   sport: string
   market: string
@@ -260,7 +261,7 @@ export default function ArbitrageDashboard() {
 function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp; onBookmark: () => void; saving: boolean }) {
   const tier = profitTier(op.arbitragePercentage)
   return (
-    <div className={`group relative bg-surface-container-low rounded-2xl ring-1 ${tier.ring} overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl ${tier.glow}`}>
+    <Link href={`/arbitrage/${op.id}`} className={`block group relative bg-surface-container-low rounded-2xl ring-1 ${tier.ring} overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl ${tier.glow}`}>
       {/* Top gradient accent */}
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
 
@@ -315,7 +316,7 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp; onBookmark
             <span className="text-2xl font-black text-emerald-400">{formatCurrency(op.guaranteedProfit)}</span>
           </div>
           <button
-            onClick={onBookmark}
+            onClick={(e) => { e.preventDefault(); onBookmark() }}
             disabled={saving}
             className="bg-primary/10 text-primary px-5 py-2 rounded-full font-black text-[10px] hover:bg-primary/20 active:scale-95 transition-all uppercase tracking-widest border border-primary/20 disabled:opacity-50 flex items-center gap-2"
           >
@@ -329,13 +330,13 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp; onBookmark
           <span className="text-[9px] text-zinc-600 font-black uppercase tracking-widest">Coverage: {((op.impliedProb || 0) * 100).toFixed(1)}%</span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
 
 function SavedArbitrageCard({ sop }: { sop: SavedOp }) {
   return (
-    <div className="bg-surface-container-low rounded-2xl ring-1 ring-outline-variant/20 overflow-hidden opacity-80 hover:opacity-100 transition-all">
+    <Link href={`/arbitrage/${sop.id}`} className="block bg-surface-container-low rounded-2xl ring-1 ring-outline-variant/20 overflow-hidden opacity-80 hover:opacity-100 transition-all">
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-zinc-500/20 to-transparent" />
       <div className="p-6">
         <div className="flex justify-between items-start mb-5">
@@ -368,6 +369,6 @@ function SavedArbitrageCard({ sop }: { sop: SavedOp }) {
           <span className="text-2xl font-black text-primary">{formatCurrency(sop.profit_estimate)}</span>
         </div>
       </div>
-    </div>
+    </Link>
   )
 }

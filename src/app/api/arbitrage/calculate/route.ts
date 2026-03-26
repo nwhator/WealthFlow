@@ -39,6 +39,7 @@ export async function GET(request: Request) {
       : []
 
     return {
+      id: row.id,
       match: row.match,
       sport: row.sport,
       market: row.market,

@@ -120,9 +120,14 @@ export default function ArbitrageDashboard() {
     else fetchSaved()
   }, [fetchData, fetchSaved, activeTab])
 
-  const filtered = activeTab === 'Live'
-    ? opportunities.filter(op => filter === 'All' || op.sport.toLowerCase().includes(filter.toLowerCase()))
-    : savedOpportunities.filter(op => filter === 'All' || op.sport.toLowerCase().includes(filter.toLowerCase()))
+  const filtered = (activeTab === 'Live' ? opportunities : savedOpportunities)
+    .filter(op => filter === 'All' || op.sport.toLowerCase().includes(filter.toLowerCase()))
+    .sort((a, b) => {
+      const dateA = new Date(a.commence_time).getTime()
+      const dateB = new Date(b.commence_time).getTime()
+      if (dateA !== dateB) return dateA - dateB
+      return (b.arbitrage_percentage || 0) - (a.arbitrage_percentage || 0)
+    })
 
   return (
     <div className="min-h-screen bg-surface-dim pb-32">

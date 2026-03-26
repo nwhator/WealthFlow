@@ -3,8 +3,8 @@ import { NormalizedGame } from './odds-service'
 export interface Prediction {
   match: string
   sport: string
-  market: string // 'h2h' | 'totals' | 'spreads'
-  prediction: string // e.g., 'Home Win', 'Over 2.5', 'Under 1.5', 'Home -1.5'
+  market: string 
+  prediction: string 
   odds: number
   confidence: number
   edge: number
@@ -30,12 +30,12 @@ interface OutcomeStats {
 
 /**
  * Derives predictions from normalized odds for H2H, Totals, and Spreads.
- * Optimized for maximum market coverage.
+ * MAX INCLUSIVE: Shows all outcomes with positive value or reasonable probability.
  */
 export function generatePredictions(games: NormalizedGame[]): Prediction[] {
   const predictions: Prediction[] = []
   
-  // Deduplicate games by ID first
+  // Deduplicate games by ID
   const uniqueGames = Array.from(new Map(games.map(g => [g.id, g])).values())
 
   for (const game of uniqueGames) {
@@ -51,7 +51,6 @@ export function generatePredictions(games: NormalizedGame[]): Prediction[] {
         if (!market) continue
 
         for (const outcome of market.outcomes) {
-          // Robust labeling: Ensure point is included for totals/spreads
           const label = marketKey === 'h2h' ? outcome.name : `${outcome.name} ${outcome.point !== undefined ? (outcome.point > 0 ? '+' : '') + outcome.point : ''}`.trim()
           
           if (!bestOddsMap[label]) {
@@ -86,52 +85,53 @@ export function generatePredictions(games: NormalizedGame[]): Prediction[] {
       const houseFee = Math.max(0.1, (overround - 1) * 100)
       stats.forEach(s => { s.trueProb = s.impliedProb / overround })
 
-      const pick = stats.sort((a, b) => b.trueProb - a.trueProb)[0]
-      if (!pick) continue
+      // Generate predictions for ALL statistically relevant outcomes
+      for (const stat of stats) {
+        const edge = (1 / stat.avgOdds) - (1 / stat.odds)
+        const valueBoost = edge * 100
 
-      const edge = (1 / pick.avgOdds) - (1 / pick.odds)
-      const valueBoost = Math.max(0, edge * 100)
+        // MAX INCLUSIVE FILTER: 
+        // Show if there is ANY edge (value > 0) OR if the probability is high (> 30%)
+        const isHighlyRelevant = (stat.trueProb > 0.30) || (valueBoost > 0.01)
+        
+        if (isHighlyRelevant && stat.odds < 20.0) {
+          const volatility = stat.odds > 4.0 ? 'Active' : stat.odds > 2.5 ? 'Normal' : 'Stable'
+          const liquidity = game.sport.toLowerCase().includes('soccer') || game.sport.toLowerCase().includes('basketball') ? 'Professional' : 'Mid-Tier'
 
-      // RELAXED PREDICTION FILTERING
-      // Show if prob > 45% or value edge > 2.0%
-      const isPickValid = (pick.trueProb > 0.45 && pick.odds < 5.0) || (valueBoost > 1.8 && pick.odds < 8.0)
-      if (!isPickValid) continue
-
-      const volatility = pick.odds > 3.0 ? 'Active' : pick.odds > 2.0 ? 'Normal' : 'Stable'
-      const liquidity = game.sport.toLowerCase().includes('soccer') || game.sport.toLowerCase().includes('basketball') ? 'Professional' : 'Mid-Tier'
-
-      predictions.push({
-        match: game.match,
-        sport: game.sport,
-        market: marketKey,
-        prediction: pick.name === '1' ? 'Home Win' : pick.name === '2' ? 'Away Win' : pick.name === 'X' ? 'Draw' : pick.name,
-        odds: Number(pick.odds.toFixed(2)),
-        confidence: Math.round(pick.trueProb * 100),
-        edge: Number(valueBoost.toFixed(2)),
-        marketAverage: Number(pick.avgOdds.toFixed(2)),
-        marketMargin: Number(houseFee.toFixed(2)),
-        volatility,
-        liquidity,
-        unitReturn: Number((pick.odds * 1000 - 1000).toFixed(0)),
-        reason: formatReason(pick, valueBoost, houseFee, game.sport, marketKey),
-        commence_time: game.commence_time,
-        bookmaker: pick.bookmaker
-      })
+          predictions.push({
+            match: game.match,
+            sport: game.sport,
+            market: marketKey,
+            prediction: stat.name === '1' ? 'Home Win' : stat.name === '2' ? 'Away Win' : stat.name === 'X' ? 'Draw' : stat.name,
+            odds: Number(stat.odds.toFixed(2)),
+            confidence: Math.round(stat.trueProb * 100),
+            edge: Number(Math.max(0, valueBoost).toFixed(2)),
+            marketAverage: Number(stat.avgOdds.toFixed(2)),
+            marketMargin: Number(houseFee.toFixed(2)),
+            volatility,
+            liquidity,
+            unitReturn: Number((stat.odds * 1000 - 1000).toFixed(0)),
+            reason: formatReason(stat, valueBoost, houseFee, game.sport, marketKey),
+            commence_time: game.commence_time,
+            bookmaker: stat.bookmaker
+          })
+        }
+      }
     }
   }
 
-  // Double final check: only keep 1 prediction per match/market type to avoid noise
+  // Sort by Confidence + Edge for the "Picks" view, but UI will re-sort
   return predictions.sort((a, b) => (b.confidence + b.edge) - (a.confidence + a.edge))
 }
 
 function formatReason(pick: OutcomeStats, ed: number, hf: number, sport: string, mkt: string): string {
   const p = Math.round(pick.trueProb * 100)
-  const isValue = ed > 2.0
+  const isValue = ed > 0.5
   const mLabel = mkt === 'totals' ? 'Over/Under' : mkt === 'spreads' ? 'Handicap' : 'Match Result'
   
   if (isValue) {
-    return `Great value detected in the ${mLabel} market. The average price for '${pick.name}' is ${pick.avgOdds.toFixed(2)}, but ${pick.bookmaker} has a better rate of ${pick.odds.toFixed(2)}. This gives you a +${ed.toFixed(1)}% advantage vs the market.`
+    return `Model identified a pricing discrepancy in the ${mLabel} market. The average market price is ${pick.avgOdds.toFixed(2)}, but ${pick.bookmaker} is offering ${pick.odds.toFixed(2)}. This gives an estimated ${ed.toFixed(1)}% statistical advantage.`
   }
   
-  return `Strong choice found for ${pick.name}! Our system sees a ${p}% winning probability for this match. With household fees at just ${hf.toFixed(1)}%, this represents a very efficient entry point.`
+  return `Strong market consensus found for ${pick.name}. Our algorithmic analysis shows a ${p}% winning probability for this match. The ${hf.toFixed(1)}% bookie margin indicates high market efficiency.`
 }

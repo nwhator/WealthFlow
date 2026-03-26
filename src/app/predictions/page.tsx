@@ -54,7 +54,6 @@ export default async function PredictionsPage() {
   const { data: predictions } = await supabase
     .from('predictions_cache')
     .select('*')
-    .order('confidence', { ascending: false })
 
   const now = new Date()
   const startOfToday = new Date(now)
@@ -62,10 +61,18 @@ export default async function PredictionsPage() {
   const thirtyDaysFromNow = new Date(now)
   thirtyDaysFromNow.setDate(now.getDate() + 30)
 
-  const allPredictions: Prediction[] = (predictions || []).filter(p => {
-    const d = new Date(p.commence_time)
-    return d >= startOfToday && d <= thirtyDaysFromNow
-  })
+  // SORT BY: Date (Asc), then Odds (Desc)
+  const allPredictions: Prediction[] = (predictions || [])
+    .filter(p => {
+        const d = new Date(p.commence_time)
+        return d >= startOfToday && d <= thirtyDaysFromNow
+    })
+    .sort((a, b) => {
+        const dateA = new Date(a.commence_time).getTime()
+        const dateB = new Date(b.commence_time).getTime()
+        if (dateA !== dateB) return dateA - dateB
+        return b.odds - a.odds
+    })
   const visiblePredictions = isPremium ? allPredictions : allPredictions.slice(0, FREE_LIMIT)
   const lockedCount = allPredictions.length - FREE_LIMIT
 

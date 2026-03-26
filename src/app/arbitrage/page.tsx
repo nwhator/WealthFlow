@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { bookmarkOpportunity, getSavedOpportunities } from './actions'
 import PremiumPaywall from '@/components/PremiumPaywall'
 import Link from 'next/link'
+import RefreshButton from '@/components/RefreshButton'
 
 type Outcome = {
   name: string
@@ -184,7 +185,9 @@ export default function ArbitrageDashboard() {
                 </button>
               ))}
             </div>
-            <span className="text-sm text-on-surface-variant italic">Refreshed every 12 hours</span>
+            <div className="flex items-center gap-6">
+              <RefreshButton />
+            </div>
           </div>
         )}
 

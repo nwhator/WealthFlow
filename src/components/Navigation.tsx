@@ -20,7 +20,6 @@ export default function Navigation() {
           <h1 className="text-primary font-black tracking-tighter font-['Inter'] text-2xl">WealthFlow</h1>
         </div>
         <div className="flex items-center gap-2">
-          <Link href="/pricing" className="text-[10px] uppercase tracking-widest font-black text-primary border border-primary/30 bg-primary/10 hover:bg-primary/20 px-3 py-1.5 rounded-full transition-all">Pro</Link>
           <button onClick={() => document.documentElement.classList.toggle('dark')} className="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-surface-container-highest">
             <span className="material-symbols-outlined">contrast</span>
           </button>

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { getUserPlan } from '@/lib/subscription'
 import PremiumPaywall from '@/components/PremiumPaywall'
 import Link from 'next/link'
+import RefreshButton from '@/components/RefreshButton'
 
 type Prediction = {
   id: string
@@ -60,9 +61,12 @@ export default async function PredictionsPage() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
           <div>
             <h1 className="text-5xl font-black text-on-surface tracking-tight mb-3">Predictions</h1>
-            <p className="text-on-surface-variant max-w-lg leading-relaxed">
-              Value bets identified using implied probability analysis across global markets, refreshed every 12 hours.
-            </p>
+              <p className="text-on-surface-variant max-w-lg leading-relaxed">
+                Value bets identified using implied probability analysis across global markets.
+              </p>
+              <div className="mt-4">
+                <RefreshButton />
+              </div>
           </div>
           {!isPremium && (
             <Link href="/pricing" className="px-6 py-2.5 bg-primary text-on-primary rounded-full font-bold text-xs uppercase tracking-widest hover:bg-primary/90 transition-all shadow-md shadow-primary/20 whitespace-nowrap">

@@ -56,6 +56,7 @@ export async function runFullDataRefresh() {
         sport: p.sport,
         market: p.market,
         prediction: p.prediction,
+        line: p.line ?? null,
         odds: p.odds,
         confidence: p.confidence,
         reason: p.reason,

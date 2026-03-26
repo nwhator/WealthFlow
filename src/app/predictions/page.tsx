@@ -10,6 +10,7 @@ type Prediction = {
   match: string
   sport: string
   prediction: string
+  line: number | null
   odds: number
   confidence: number
   reason: string
@@ -165,8 +166,11 @@ export default async function PredictionsPage() {
       {allPredictions.length === 0 ? (
         <div className="text-center py-24 bg-surface-container-low rounded-3xl border border-dashed border-outline-variant/20">
           <span className="material-symbols-outlined text-7xl text-on-surface-variant mb-4 opacity-30 block">analytics</span>
-          <p className="text-on-surface-variant font-bold text-lg">No predictions available yet.</p>
-          <p className="text-on-surface-variant/60 text-sm mt-2">Data is fetched automatically every 48 hours.</p>
+          <p className="text-on-surface-variant font-bold text-lg">No picks available yet.</p>
+          <p className="text-on-surface-variant/60 text-sm mt-2 max-w-xs mx-auto leading-relaxed">
+            The prediction engine runs automatically every 48 hours. Check back after the next scheduled data refresh shown above.
+          </p>
+          <p className="text-on-surface-variant/40 text-xs mt-4 font-bold uppercase tracking-widest">Engine data auto-updates • No action required</p>
         </div>
       ) : (
         <>
@@ -175,9 +179,10 @@ export default async function PredictionsPage() {
             {visiblePredictions.map((p) => {
               const tier = confidenceTier(p.confidence)
               return (
-                <div
+                <Link
                   key={p.id}
-                  className={`group relative rounded-2xl ring-1 ${tier.ring} ${tier.bg} p-5 flex flex-col gap-4 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:shadow-primary/5 overflow-hidden`}
+                  href={`/predictions/${p.id}`}
+                  className={`group relative rounded-2xl ring-1 ${tier.ring} ${tier.bg} p-5 flex flex-col gap-4 transition-all duration-300 hover:scale-[1.01] hover:shadow-2xl hover:shadow-primary/5 overflow-hidden cursor-pointer`}
                 >
                   {/* Decorative top accent */}
                   <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
@@ -209,6 +214,11 @@ export default async function PredictionsPage() {
                   <div className="bg-surface-container-highest/60 rounded-xl p-4 border border-outline-variant/10">
                     <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-bold mb-1">Engine Verdict</p>
                     <p className="font-black text-on-surface text-2xl tracking-tight leading-none">{p.prediction}</p>
+                    {p.line !== null && p.market !== 'h2h' && (
+                      <p className="text-[10px] text-zinc-500 font-bold mt-0.5">
+                        Line: <span className="text-primary font-black">{p.market === 'totals' ? `${Math.abs(p.line)} Goals/Pts` : `${p.line > 0 ? '+' : ''}${p.line}`}</span>
+                      </p>
+                    )}
                     <div className="flex items-center justify-between mt-2">
                       <span className="text-[11px] text-on-surface-variant font-mono">
                         Odds: <span className="text-primary font-black text-sm">{p.odds.toFixed(2)}</span>
@@ -259,7 +269,7 @@ export default async function PredictionsPage() {
                       <span className="text-emerald-400 flex items-center gap-1">★ Gold Value</span>
                     )}
                   </div>
-                </div>
+                </Link>
               )
             })}
           </div>

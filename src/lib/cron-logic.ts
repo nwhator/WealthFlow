@@ -28,6 +28,9 @@ export async function runFullDataRefresh() {
         edge: p.edge,
         market_average: p.marketAverage,
         market_margin: p.marketMargin,
+        volatility: p.volatility,
+        liquidity: p.liquidity,
+        unit_return: p.unitReturn,
         commence_time: p.commence_time,
         bookmaker: p.bookmaker,
       }))

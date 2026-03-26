@@ -16,6 +16,9 @@ type Prediction = {
   edge: number
   market_average: number
   market_margin: number
+  volatility: string
+  liquidity: string
+  unit_return: number
   commence_time: string
   bookmaker: string
 }
@@ -142,31 +145,41 @@ export default async function PredictionsPage() {
                   </div>
 
                   {/* Statistical Edge Analysis */}
-                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-3 gap-2">
+                  <div className="pt-4 border-t border-outline-variant/10 grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Bookie Prob</p>
-                      <p className="text-xs font-bold text-on-surface">{(1 / (p.odds || 1) * 100).toFixed(1)}%</p>
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Market Avg</p>
-                      <p className="text-xs font-bold text-on-surface">{(p.market_average || 0).toFixed(2)}</p>
+                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Market Consensus</p>
+                      <p className="text-sm font-bold text-on-surface">{(p.market_average || 0).toFixed(2)}</p>
                     </div>
                     <div className="space-y-1 text-right">
-                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Value Edge</p>
-                      <p className="text-xs font-black text-primary">+{(p.edge || 0).toFixed(1)}%</p>
+                      <p className="text-[9px] uppercase tracking-widest text-on-surface-variant font-black">Mathematical Edge</p>
+                      <p className="text-sm font-black text-primary">+{(p.edge || 0).toFixed(1)}%</p>
                     </div>
                   </div>
 
-                  <div className="p-3 rounded-lg bg-primary/5 border border-primary/10">
-                    <p className="text-[10px] text-on-surface-variant leading-relaxed">
-                        <span className="font-bold text-primary italic mr-1">Insight:</span>
+                  <div className="grid grid-cols-3 gap-2 py-3 border-t border-b border-outline-variant/10">
+                    <div className="flex flex-col">
+                        <span className="text-[8px] uppercase font-bold text-zinc-500">Volatility</span>
+                        <span className={`text-[10px] font-black ${p.volatility === 'High' ? 'text-red-400' : p.volatility === 'Medium' ? 'text-yellow-400' : 'text-emerald-400'}`}>{p.volatility || 'Low'}</span>
+                    </div>
+                    <div className="flex flex-col">
+                        <span className="text-[8px] uppercase font-bold text-zinc-500">Liquidity</span>
+                        <span className="text-[10px] font-black text-on-surface">{p.liquidity || 'Deep'}</span>
+                    </div>
+                    <div className="flex flex-col text-right">
+                        <span className="text-[8px] uppercase font-bold text-zinc-500">Unit Profit</span>
+                        <span className="text-[10px] font-black text-primary">₦{Math.round(p.unit_return || 0)}</span>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-surface-container-high border border-outline-variant/10">
+                    <p className="text-[11px] leading-relaxed italic text-on-surface-variant">
                         {p.reason}
                     </p>
                   </div>
                   
-                  <div className="flex items-center justify-between text-[9px] text-zinc-500 font-black uppercase tracking-widest pt-2">
+                  <div className="flex items-center justify-between text-[9px] text-zinc-500 font-black uppercase tracking-[0.15em] pt-2">
+                    <span className="flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-primary" /> Model Confidence: {p.confidence}%</span>
                     <span>Vig: {(p.market_margin || 0).toFixed(1)}%</span>
-                    <span>Ref: WF-AI-v4</span>
                   </div>
                 </div>
               )

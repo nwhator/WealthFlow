@@ -36,6 +36,9 @@ create table if not exists predictions_cache (
   edge           numeric default 0,
   market_average numeric default 0,
   market_margin  numeric default 0,
+  volatility     text default 'Medium',
+  liquidity      text default 'High',
+  unit_return    numeric default 0,
   commence_time  text,
   bookmaker      text,
   fetched_at     timestamp with time zone default now()

@@ -149,7 +149,9 @@ export function generatePredictions(games: NormalizedGame[]): Prediction[] {
     }
   }
 
-  return predictions.sort((a, b) => new Date(a.commence_time).getTime() - new Date(b.commence_time).getTime())
+  return predictions
+    .filter(p => p.confidence >= 55)
+    .sort((a, b) => new Date(a.commence_time).getTime() - new Date(b.commence_time).getTime())
 }
 
 function formatReason(pick: OutcomeStats, ed: number, hf: number, sport: string, mkt: string): string {

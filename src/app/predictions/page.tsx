@@ -37,7 +37,7 @@ const confidenceTier = (c: number) => {
     label: 'Gold Pick',
     labelClass: 'text-primary bg-primary/10 border-primary/25',
   }
-  if (c >= 50) return {
+  if (c >= 55) return {
     ring: 'ring-yellow-500/25',
     bg: 'bg-gradient-to-br from-yellow-500/5 via-surface-container-low to-surface-container-low',
     badge: 'bg-yellow-400 text-zinc-900',
@@ -144,7 +144,7 @@ export default async function PredictionsPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-primary" />Gold ≥ 70% Conf.
             </span>
             <span className="flex items-center gap-1.5 text-[10px] text-on-surface-variant/70 font-bold uppercase tracking-widest">
-              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />Standard ≥ 50%
+              <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" />Standard ≥ 55%
             </span>
           </div>
           <DataFreshnessIndicator />

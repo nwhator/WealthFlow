@@ -11,8 +11,17 @@ export async function runFullDataRefresh() {
   const games = await getNormalizedOdds()
   console.log(`[Cron-Logic] Fetched ${games.length} games`)
 
+  const now = new Date()
+  const thirtyDays = new Date()
+  thirtyDays.setDate(now.getDate() + 30)
+
+  const relevantGames = games.filter(g => {
+    const d = new Date(g.commence_time)
+    return d >= now && d <= thirtyDays
+  })
+
   // 1. Predictions Cache
-  const predictions = generatePredictions(games)
+  const predictions = generatePredictions(relevantGames)
   await supabase.from('predictions_cache').delete().neq('id', '00000000-0000-0000-0000-000000000000')
 
   if (predictions.length > 0) {
@@ -39,7 +48,7 @@ export async function runFullDataRefresh() {
 
   // 2. Arbitrage Cache
   const arbitrageOpps = []
-  for (const game of games) {
+  for (const game of relevantGames) {
     if (!game.bookmakers || game.bookmakers.length === 0) continue
 
     const outcomesByName: Record<string, Outcome[]> = {}

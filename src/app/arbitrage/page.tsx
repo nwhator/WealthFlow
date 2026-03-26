@@ -140,9 +140,16 @@ export default function ArbitrageDashboard() {
                   Saved Ops
                 </button>
               </div>
-              <p className="text-on-surface-variant text-lg max-w-lg leading-relaxed">
+              <p className="text-on-surface-variant text-lg max-w-lg leading-relaxed mb-4">
                 {activeTab === 'Live' ? 'Identify high-yield discrepancies across global sportsbooks.' : 'Review your previously identified arbitrage opportunities.'}
               </p>
+              <div className="flex items-center gap-3 mb-4">
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-[10px] font-black uppercase tracking-widest">Network Active</span>
+                  </div>
+                  <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Efficiency: 99.9%</span>
+              </div>
               <div className="mt-4">
                 <Link href="/arbitrage/calculator" className="inline-flex items-center gap-2 text-primary font-black uppercase tracking-[0.1em] text-[10px] hover:underline">
                     <span className="material-symbols-outlined text-sm">calculate</span>
@@ -237,11 +244,11 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
         </div>
         <div className="grid grid-cols-2 gap-4 py-4 mb-4 border-t border-b border-outline-variant/10">
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">ROI</p>
+            <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-black">Profit Potential</p>
             <p className="text-sm font-black text-primary">+{op.arbitragePercentage.toFixed(2)}%</p>
           </div>
           <div>
-            <p className="text-[10px] uppercase tracking-widest text-on-surface-variant font-black">Market Probe</p>
+            <p className="text-[10px] uppercase tracking-widest text-zinc-500 font-black">Market Accuracy</p>
             <p className="text-sm font-bold text-on-surface">{((op.impliedProb || 0) * 100).toFixed(1)}%</p>
           </div>
         </div>
@@ -265,7 +272,7 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
           <div>
             <div className="flex items-center gap-1.5 mb-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-              <span className="text-[10px] text-on-surface-variant uppercase tracking-wider font-bold block">Guaranteed Profit</span>
+              <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold block">Secured Return</span>
             </div>
             <span className="text-xl font-bold text-primary tracking-tight">{formatCurrency(op.guaranteedProfit)}</span>
           </div>
@@ -276,7 +283,7 @@ function ArbitrageCard({ op, onBookmark, saving }: { op: ArbitrageOp, onBookmark
         </div>
 
         <div className="mt-4 pt-3 border-t border-dashed border-outline-variant/30 flex items-center justify-between">
-           <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Risk Score: 0.00 (Absolute)</span>
+           <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Risk Level: Zero (Secured)</span>
            <span className="text-[9px] text-zinc-500 font-black uppercase tracking-widest">Efficiency: A+</span>
         </div>
       </div>

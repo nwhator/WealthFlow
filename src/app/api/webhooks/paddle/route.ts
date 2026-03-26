@@ -28,23 +28,12 @@ export async function POST(request: Request) {
       }
 
       case 'subscription.updated': {
-        const subId = payload.data.id
-        const status = payload.data.status
-        const userId = payload.data.custom_data?.user_id
-        if (!userId) break
-
-        if (status === 'past_due' || status === 'paused') {
-          // You might want to deactivate here
-        } else if (status === 'active') {
-             // ensure it's synced
-        }
         break
       }
 
       case 'subscription.canceled': {
-        const subId = payload.data.id
-        await deactivateSubscription(subId)
-        console.log(`[Paddle] Deactivated subscription ${subId}`)
+        await deactivateSubscription(payload.data.id)
+        console.log(`[Paddle] Deactivated subscription ${payload.data.id}`)
         break
       }
 
